@@ -1,0 +1,203 @@
+
+plugins {
+    id "com.android.application"
+    id "kotlin-android"
+    id "dev.flutter.flutter-gradle-plugin"
+    //id 'org.gradle.toolchains.foojay-resolver-convention'
+}
+
+def localProperties = new Properties()
+def localPropertiesFile = rootProject.file('local.properties')
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.withReader('UTF-8') { reader ->
+        localProperties.load(reader)
+    }
+}
+
+//comment this and use     apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
+/*def flutterRoot = localProperties.getProperty('flutter.sdk')
+if (flutterRoot == null) {
+    throw new GradleException("Flutter SDK not found. Define location with flutter.sdk in the local.properties file.")
+}*/
+
+def flutterVersionCode = localProperties.getProperty('flutter.versionCode')
+if (flutterVersionCode == null) {
+    flutterVersionCode = '1'
+}
+
+def flutterVersionName = localProperties.getProperty('flutter.versionName')
+if (flutterVersionName == null) {
+    flutterVersionName = '1.0'
+}
+
+
+
+//apply plugin: 'com.android.application' //move to top
+//apply plugin: 'kotlin-android' //move to top
+//def flutterRoot = localProperties.getProperty('flutter.sdk')
+//apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle" //move to top
+apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.firebase.crashlytics' //for firebase crashlytics(show crash in firebase)
+apply plugin: 'com.google.firebase.firebase-perf' //for firebase performance monitoring
+
+android {
+    namespace "com.example.ecommadmin"
+    //testNamespace "com.example.ecommadmin"
+    ///compileSdkVersion 35
+    compileSdk 35
+    //buildToolsVersion = '29.0.2'
+    ///compileSdkVersion flutter.compileSdkVersion
+    ///ndkVersion flutter.ndkVersion //26.1.10909125 //23.1.7779620 //working
+    //ndkVersion '26.1.10909125'
+    ndkVersion '27.0.12077973'
+
+
+
+    compileOptions {
+        //sourceCompatibility JavaVersion.VERSION_1_8
+        //targetCompatibility JavaVersion.VERSION_1_8
+        //sourceCompatibility JavaVersion.VERSION_17
+        //targetCompatibility JavaVersion.VERSION_17
+        sourceCompatibility JavaVersion.VERSION_21
+        targetCompatibility JavaVersion.VERSION_21
+        //sourceCompatibility JavaVersion.VERSION_22
+        //targetCompatibility JavaVersion.VERSION_22
+
+        //add this code //Flag to enable support for the new language APIs
+        coreLibraryDesugaringEnabled true
+    }
+
+    kotlin {
+        jvmToolchain(21)
+    }
+
+
+   /* tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile.class).configureEach {
+        jvmTargetValidationMode = org.jetbrains.kotlin.gradle.dsl.jvm.JvmTargetValidationMode.WARNING
+    }*/
+   /* tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+        kotlinOptions {
+            jvmTarget = "17"
+            //jvmTarget = libs.versions.jvm.get().toString()
+            *//*withJava()
+            testRuns["test"].executionTask.configure {
+                useJUnitPlatform()
+            }*//*
+        }
+    }*/
+    /*kotlin {
+        *//*jvmToolchain {
+            languageVersion.set(JavaLanguageVersion.of(23))
+        }*//*
+        // Or shorter:
+        jvmToolchain(17)
+
+    }*/
+
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
+
+    defaultConfig {
+        applicationId "com.example.ecommadmin"
+
+        /*manifestPlaceholders = [appAuthRedirectScheme: "com.example.ecommadmin",
+                                applicationName: "com.example.ecommadmin"]*/
+        // You can update the following values to match your application needs.
+        // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
+        /*minSdkVersion flutter.minSdkVersion
+        targetSdkVersion flutter.targetSdkVersion*/
+        ///minSdkVersion 23
+        //minSdkVersion 24
+        ///targetSdkVersion 31
+        //targetSdkVersion 35
+
+        minSdk = 24
+        targetSdk = 35
+        versionCode flutterVersionCode.toInteger()
+        versionName flutterVersionName
+
+        multiDexEnabled true
+       /* ndk {
+            abiFilters 'x86', 'armeabi-v7a'
+        }*/
+        splits {
+            abi {
+                enable true
+                reset()
+                include 'x86', 'armeabi-v7a'
+                universalApk true
+            }
+        }
+
+    }
+
+    buildTypes {
+        release {
+            //minifyEnabled false
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            // TODO: Add your own signing config for the release build.
+            // Signing with the debug keys for now, so `flutter run --release` works.
+            signingConfig signingConfigs.debug
+        }
+    }
+}
+
+
+//uncomment this, new
+
+flutter {
+    source '../..'
+}
+
+
+dependencies {
+    //implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version" //deprecated, Gradle plugin version 1.5.20 and higher.
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:2.0.21" //deprecated, Gradle plugin version 1.5.20 and higher.
+    //The following dependencies do not satisfy the required version:
+    //project ':platform_device_id' -> org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.50
+    //implementation 'org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version'
+    //implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version'
+
+    //for firebase
+    implementation(platform("com.google.firebase:firebase-bom:33.0.0"))
+    implementation("com.google.firebase:firebase-analytics")
+    //implementation("com.google.firebase:firebase-analytics-ktx")
+    implementation("com.google.firebase:firebase-auth-ktx")
+    implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-firestore")
+    //implementation 'com.google.firebase:firebase-iid'
+
+    implementation 'com.android.support:multidex:2.0.1'
+
+
+    // you can upgrade the window library too
+    implementation 'androidx.window:window:1.0.0'
+    implementation 'androidx.window:window-java:1.0.0'
+    coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.2.2'
+    //coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.0.6'
+
+/*
+    implementation 'com.google.firebase:firebase-core:21.1.1'
+    implementation 'com.google.firebase:firebase-analytics:21.5.1'
+    implementation 'com.google.firebase:firebase-messaging:23.4.1'
+    implementation("com.google.firebase:firebase-auth-ktx")
+
+    implementation 'com.google.firebase:firebase-database-ktx:20.3.1'
+    //implementation 'com.google.firebase:firebase-config-ktx:21.1.2' //for app update using firebase remote config
+    implementation 'com.google.firebase:firebase-config:21.6.3' //for app update using firebase remote config
+
+    //todo for open app from firebase dynamic deep link - no need of this
+    //implementation 'com.google.firebase:firebase-invites:17.0.0'
+
+    //for firebase crashlytics(show crash in firebase)
+    implementation 'com.google.firebase:firebase-crashlytics:18.6.2'
+*/
+
+
+
+
+
+}

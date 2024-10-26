@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "472201750510",
+    "firebase_url": "https://ecomm-18247-default-rtdb.firebaseio.com",
+    "project_id": "ecomm-18247",
+    "storage_bucket": "ecomm-18247.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:472201750510:android:3c91c37a652319d8be10ff",
+        "android_client_info": {
+          "package_name": "com.example.ecommadmin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "472201750510-5tqo9tm9joe7rgshudd6qdj0amrcef1d.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.ecommadmin",
+            "certificate_hash": "65f35191317238a9727f9abd0df1ff72f38236e4"
+          }
+        },
+        {
+          "client_id": "472201750510-t15og19aei0mr34q2gas9h8ifr3bqttc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAhKuAgbA3edPT6x_uZ3xKya2QurPj1eXE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "472201750510-t15og19aei0mr34q2gas9h8ifr3bqttc.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "472201750510-6mqs6mqqro6jg00jgejmp5mk7bjupkvd.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.ecommadmin"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

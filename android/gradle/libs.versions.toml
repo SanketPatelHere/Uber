@@ -1,0 +1,344 @@
+##########################################################
+
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+googleservices = { id = "com.google.gms.google-services", version.ref = "googleservices" }
+#firebasecrashlytics = { id = "com.google.firebase", name = "firebase-crashlytics", version.ref = "firebasecrashlytics" }
+#firebaseperf = { id = "com.google.firebase", name = "firebase-perf", version.ref = "firebaseperf" }
+firebasecrashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebasecrashlytics" }
+firebaseperf = { id = "com.google.firebase.firebase-perf", version.ref = "firebaseperf" }
+fluttergradleplugin = { id = "dev.flutter.flutter-gradle-plugin", version.ref = "fluttergradleplugin" }
+
+##########################################################
+[libraries]
+
+android-async-http = { module = "com.loopj.android:android-async-http", version.ref = "androidAsyncHttp" }
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
+androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
+androidx-compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
+androidx-ui = { group = "androidx.compose.ui", name = "ui" }
+androidx-ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
+androidx-ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
+androidx-ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
+androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-manifest" }
+androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
+androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
+
+# UI
+commons-io = { module = "org.apache.commons:commons-io", version.ref = "commonsIo" }
+contactpicker = { module = "io.github.farhad:contactpicker", version.ref = "contactpicker" }
+flexbox = { module = "com.google.android.flexbox:flexbox", version.ref = "flexbox" }
+old-flexbox = { module = "com.google.android:flexbox", version.ref = "flexbox" } # This is the old dependency; consider using 'flexbox' instead.
+kotlin-stdlib-jdk7-v1822 = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk7", version.ref = "kotlinStdlibJdk7" }
+material = { module = "com.google.android.material:material", version.ref = "material" }
+#errorview = { module = "tr.xip.errorview:library", version.ref = "errorview" }
+errorview = { group = "tr.xip.errorview", name = "library", version.ref = "errorviewlibrary" }
+cfalertdialog = { group = "com.crowdfire.cfalertdialog", name = "cfalertdialog", version.ref = "cfalertdialog" }
+
+#androidnetworking = { group = "com.amitshekhar.android", name = "android-networking", version.ref = "android_networking" }
+androidnetworking = { group = "com.github.amitshekhariitbhu.Fast-Android-Networking", name = "android-networking", version.ref = "android_networking" }
+androidxappcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+recyclerview = { group = "androidx.recyclerview", name = "recyclerview", version.ref = "recyclerview" }
+cardview = { group = "androidx.cardview", name = "cardview", version.ref = "cardview" }
+constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+facebooklogin = { group = "com.facebook.android", name = "facebook-login", version.ref = "facebooklogin" }
+ripple-effect = { module = "com.patrickpissurno:ripple-effect", version.ref = "rippleEffect" }
+segmented = { group = "info.hoang8f", name = "android-segmented", version.ref = "segmented" }
+
+#new
+notificationbadge = { group = "com.nex3z", name = "notification-badge", version.ref = "notificationbadge" }
+shadowviewhelper = { module = "com.github.wangjiegulu:ShadowViewhelper", version.ref = "shadowviewhelper" }
+shadowimageview = { module = "com.yinglan.shadowimageview:shadowimageview", version.ref = "shadowimageview" }
+zxingembedded = { group = "com.journeyapps", name = "zxing-android-embedded", version.ref = "zxingembedded" }
+zxingcore = { group = "com.google.zxing", name = "core", version.ref = "zxingcore" }
+victor = { group = "com.victor", name = "lib", version.ref = "victor" }
+easyvalidation = { group = "com.wajahatkarim3.easyvalidation", name = "easyvalidation-core", version.ref = "easyvalidation" }
+#animatoo = { group = "com.github.mohammadatif", name = "Animatoo:master", version.ref = "animatoo" }
+animatoo = { group = "com.github.mohammadatif", name = "Animatoo:master" }
+animatoo2 = { group = "com.github.AtifSayings", name = "Animatoo" , version.ref = "animatoo2" }
+androidanimations-library = { module = "com.daimajia.androidanimations:library", version.ref = "libraryVersion" }
+library = { module = "com.daimajia.easing:library", version.ref = "library" }
+multiselectspinner = { group = "com.github.pratikbutani", name = "MultiSelectSpinner", version.ref = "multiselectspinner" }
+multiselectspinner1 = { group = "com.github.puskal-khadka", name = "MultiSelectSpinner", version.ref = "multiselectspinner1" }
+multiselectspinner2 = { group = "com.github.AnuraganuPunalur", name = "Multi-Selection-Spinner-Android", version.ref = "multiselectspinner2" }
+androidyoutubeplayer = { group = "com.github.PierfrancescoSoffritti", name = "AndroidYouTubePlayer", version.ref = "androidyoutubeplayer" }
+dialogslifecycle = { group = "com.afollestad.material-dialogs", name = "lifecycle", version.ref = "dialogslifecycle" }
+dialogslifecore = { group = "com.afollestad.material-dialogs", name = "core", version.ref = "dialogslifecore" }
+
+appupdaterplayapp = { group = "com.google.android.play", name = "app-update", version.ref = "appupdaterplayapp" }
+appupdaterktx = { group = "com.google.android.play", name = "app-update-ktx", version.ref = "appupdaterktx" }
+appupdater = { group = "com.github.javiersantos", name = "AppUpdater", version.ref = "appupdater" }
+jsoup = { module = "org.jsoup:jsoup", version.ref = "jsoup" }
+
+ucrop = { group = "com.github.yalantis", name = "ucrop", version.ref = "ucrop" }
+glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
+picasso = { group = "com.squareup.picasso", name = "picasso", version.ref = "picasso" }
+
+livedataktx = { group = "androidx.lifecycle", name = "lifecycle-livedata-ktx", version.ref = "livedataktx" }
+viewmodelktx = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "viewmodelktx" }
+legacysupport = { group = "androidx.legacy", name = "legacy-support-v4", version.ref = "legacysupport" }
+coordinatorlayout = { group = "androidx.coordinatorlayout", name = "coordinatorlayout", version.ref = "coordinatorlayout" }
+playservicesmaps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "playservicesmaps" }
+playserviceslocation = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playserviceslocation" }
+places = { group = "com.google.android.libraries.places", name = "places", version.ref = "places" }
+toasty = { group = "com.github.GrenderG", name = "Toasty", version.ref = "toasty" }
+nineoldandroids = { group = "com.nineoldandroids", name = "library", version.ref = "nineoldandroids" }
+smoothbottombar = { group = "com.github.ibrahimsn98", name = "SmoothBottomBar", version.ref = "smoothbottombar" }
+zoomableimageview = { group = "com.github.RaviKoradiya", name = "ZoomableImageView", version.ref = "zoomableimageview" }
+imagecropper = { group = "com.theartofdev.edmodo", name = "android-image-cropper", version.ref = "imagecropper" }
+circleimageview = { group = "de.hdodenhof", name = "circleimageview", version.ref = "circleimageview" }
+roundedimageview = { group = "com.makeramen", name = "roundedimageview", version.ref = "roundedimageview" }
+circularimageviewrotation = { module = "com.github.annhienktuit:CircularImageviewRotation", version.ref = "circularimageviewrotation" }
+materialtextfield = { group = "com.github.edgar-zigis", name = "materialtextfield", version.ref = "materialtextfield" }
+lifemark = { module = "com.github.muhammadisa:lifemark", version.ref = "lifemark" }
+richeditor-android = { module = "jp.wasabeef:richeditor-android", version.ref = "richeditorAndroid" }
+html-editor = { module = "com.github.appsfeature:html-editor", version.ref = "htmlEditor" }
+markdeditor = { module = "com.github.bxute:MarkDEditor", version.ref = "markdeditor" }
+
+#using firebase bom
+#firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
+#firebase-analytics-ktx = { module = "com.google.firebase:firebase-analytics" }
+#firebase-crashlytics-ktx = { module = "com.google.firebase:firebase-crashlytics" }
+#firebase-messaging-ktx = { module = "com.google.firebase:firebase-messaging" }
+#firebase-perf-ktx = { module = "com.google.firebase:firebase-perf" }
+
+firebase-analytics = { module = "com.google.firebase:firebase-analytics", version.ref = "firebaseAnalytics" }
+firebase-messaging = { module = "com.google.firebase:firebase-messaging", version.ref = "firebaseMessaging" }
+firebase-database-ktx = { module = "com.google.firebase:firebase-database-ktx", version.ref = "firebaseDatabaseKtx" }
+firebase-config = { module = "com.google.firebase:firebase-config", version.ref = "firebaseConfig" }
+firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics", version.ref = "firebaseCrashlytics" }
+firebase-perf-ktx = { module = "com.google.firebase:firebase-perf-ktx", version.ref = "firebasePerfKtx" }
+
+
+retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
+converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
+gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
+logging-interceptor = { module = "com.squareup.okhttp3:logging-interceptor", version.ref = "loggingInterceptor" }
+okhttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okhttp" }
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
+androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+appinvokesdk = { module = "com.paytm.appinvokesdk:appinvokesdk", version.ref = "appinvokesdk" }
+androidx-viewpager2 = { module = "androidx.viewpager2:viewpager2", version.ref = "viewpager2" }
+circleindicator = { module = "me.relex:circleindicator", version.ref = "circleindicator" }
+
+android-spinkit = { module = "com.github.ybq:Android-SpinKit", version.ref = "androidSpinkit" }
+androidx-lifecycle-extensions = { module = "androidx.lifecycle:lifecycle-extensions", version.ref = "lifecycleExtensions" }
+fancybuttons = { module = "com.github.medyo:fancybuttons", version.ref = "fancybuttons" }
+cycle-menu = { module = "com.cleveroad:cycle-menu", version.ref = "cycleMenu" }
+indicatorseekbar = { module = "com.github.warkiz.widget:indicatorseekbar", version.ref = "indicatorseekbar" }
+pinview = { module = "com.github.GoodieBag:Pinview", version.ref = "pinview" }
+play-services-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "playServicesAuth" }
+play-services-auth-api-phone = { module = "com.google.android.gms:play-services-auth-api-phone", version.ref = "playServicesAuthApiPhone" }
+view-pinview = { module = "com.chaos.view:pinview", version.ref = "pinviewVersion" }
+volley = { module = "com.android.volley:volley", version.ref = "volley" }
+braintreepayments = { group = "com.braintreepayments", name = "card-form", version.ref = "braintreepayments" }
+stripe-android = { module = "com.stripe:stripe-android", version.ref = "stripeAndroid" }
+
+commons-csv = { module = "org.apache.commons:commons-csv", version.ref = "commonsCsv" }
+colorpicker = { module = "com.jaredrummler:colorpicker", version.ref = "colorpicker" }
+numberpickerpreference = { module = "com.github.invissvenska:NumberPickerPreference", version.ref = "numberpickerpreference" }
+zip4j = { module = "net.lingala.zip4j:zip4j", version.ref = "zip4j" }
+customtabs = { module = "com.android.support:customtabs", version.ref = "customtabs" }
+android-target-tooltip = { module = "com.github.sephiroth74:android-target-tooltip", version.ref = "androidTargetTooltip" }
+android-simple-tooltip = { module = "com.github.douglasjunior:android-simple-tooltip", version.ref = "androidSimpleTooltip" }
+touchimageview = { module = "com.github.MikeOrtiz:TouchImageView", version.ref = "touchimageview" }
+zoom-crop-image = { module = "com.github.crazyorr:zoom-crop-image", version.ref = "zoomCropImage" }
+androidx-biometric = { module = "androidx.biometric:biometric", version.ref = "biometric" }
+powermenu = { module = "com.github.skydoves:powermenu", version.ref = "powermenu" }
+carousel = { module = "com.azoft.carousellayoutmanager:carousel", version.ref = "carousel" }
+viewpagerindicator = { module = "com.github.zhpanvip:viewpagerindicator", version.ref = "viewpagerindicator" }
+dotsindicator = { module = "com.tbuonomo:dotsindicator", version.ref = "dotsindicator" }
+viewpagerdotsindicator = { module = "com.tbuonomo.andrui:viewpagerdotsindicator", version.ref = "viewpagerdotsindicator" }
+viewpagerarrowindicator = { module = "com.github.sembozdemir:ViewPagerArrowIndicator", version.ref = "viewpagerarrowindicator" }
+instacapture = { module = "com.github.tarek360:instacapture", version.ref = "instacapture" }
+fluid-slider = { module = "com.ramotion.fluidslider:fluid-slider", version.ref = "fluidSlider" }
+signseekbar = { module = "com.zhouyou:signseekbar", version.ref = "signseekbar" }
+androidx-percentlayout = { module = "androidx.percentlayout:percentlayout", version.ref = "percentlayout" }
+android-gif-drawable = { module = "pl.droidsonroids.gif:android-gif-drawable", version.ref = "androidGifDrawable" }
+ccp = { module = "com.hbb20:ccp", version.ref = "ccp" }
+countrypicker = { module = "com.github.EhsanMashhadi:CountryPicker", version.ref = "countrypicker" }
+coreprogress = { module = "io.github.lizhangqu:coreprogress", version.ref = "coreprogress" }
+design = { module = "com.android.support:design", version.ref = "design" }
+
+#chat = { module = "com.zendesk:chat", version.ref = "chat" }
+#support = { module = "com.zendesk:support", version.ref = "support" }
+#answerbot = { module = "com.zendesk:answerbot", version.ref = "answerbot" }
+
+chat = { module = "com.zendesk:chat", version.ref = "chat" }
+#zendeskmessaging = { group = "com.zendesk", name = "messaging", version.ref = "zendeskmessaging" }
+zendeskmessaging = { module = "com.zendesk:messaging", version.ref = "zendeskmessaging" }
+support = { group = "com.zendesk", name = "support", version.ref = "support" }
+answerbot = { group = "com.zendesk", name = "answerbot", version.ref = "answerbot" }
+
+
+
+#end111
+##########################################################
+
+
+[versions]
+agp = "8.7.1"
+#googleservices = "4.4.0" //error - FirebaseApp is not initialized
+commonsIo = "1.3.2"
+androidAsyncHttp = "1.4.9"
+contactpicker = "2.0.0"
+flexbox = "3.0.0"
+googleservices = "4.4.2" #working in lower version(FirebaseApp is not initialized)
+firebasecrashlytics = "3.0.2"
+firebaseperf = "1.4.2"
+#kotlin = "2.0.0"
+instacapture = "2.0.1"
+kotlin = "2.0.21"
+#kotlinStdlibJdk7 = "1.9.23"
+kotlinStdlibJdk7 = "2.0.21"
+coreKtx = "1.13.1"
+lifecycleRuntimeKtx = "2.8.6"
+activityCompose = "1.9.2"
+composeBom = "2024.09.03"
+
+
+#UI
+#material = "1.13.0" //not found
+material = "1.12.0"
+#material = "1.3.0"
+
+errorviewlibrary = "4.0.0"
+cfalertdialog = "1.1.0"
+appcompat = "1.7.0"  # AndroidX AppCompat library for providing backward compatibility to newer Android features.
+kotlin_stdlib = "xxx"  # Kotlin Standard Library - JDK7, provides standard Kotlin functions and classes.
+datastore_preferences = "1.1.1"  # AndroidX DataStore Preferences library for storing key-value pairs using the DataStore API.
+rippleEffect = "1.3.1"
+shadowimageview = "1.0.4"
+shadowviewhelper = "1.0.4"
+support = "5.0.0"
+messaging = "5.1.0"
+timber = "4.7.1"  # Jake Wharton's Timber library for enhanced logging capabilities.
+android_networking = "1.0.4"
+recyclerview = "1.3.2"
+cardview = "1.0.0"
+constraintlayout = "2.1.4"
+facebooklogin = "4.39.0"
+segmented = "1.0.6"
+notificationbadge = "1.0.2"
+zxingembedded = "3.4.0"
+zxingcore = "3.4.1"
+victor = "1.0.4"
+easyvalidation = "1.0.1"
+animatoo = "3.4.1"
+animatoo2 = "1.0.1"
+library = "2.0"
+#library = "2.0@aar"
+libraryVersion = "2.3"
+#libraryVersion = "2.3@aar"
+multiselectspinner = "1.0.1"
+multiselectspinner1 = "1.0.1"
+multiselectspinner2 = "1.0"
+roundedimageview = "2.3.0"
+androidyoutubeplayer = "7.0.1"
+dialogslifecycle = "3.3.0"
+dialogslifecore = "3.3.0"
+appupdaterplayapp = "2.1.0"
+appupdaterktx = "2.1.0"
+appupdater = "2.7"
+jsoup = "1.13.1"
+
+ucrop = "2.2.9"
+glide = "4.16.0"
+picasso = "2.71828"
+livedataktx = "2.8.4"
+viewmodelktx = "2.8.4"
+legacysupport = "1.0.0"
+coordinatorlayout = "1.2.0"
+playservicesmaps = "19.0.0"
+playserviceslocation = "21.3.0"
+places = "3.5.0"
+toasty = "1.4.2"
+nineoldandroids = "2.4.0"
+smoothbottombar = "1.7.5"
+zoomableimageview = "1.1.1"
+imagecropper = "2.7.0"
+#imagecropper = "2.8.0" //not found
+circleimageview = "3.1.0"
+circularimageviewrotation = "1.0.8"
+materialtextfield = "1.1.2"
+lifemark = "1.0.1"
+richeditorAndroid = "2.0.0"
+htmlEditor = "1.0"
+markdeditor = "v0.16"
+firebaseAnalytics = "22.0.2"
+firebaseMessaging = "24.0.0"
+firebaseDatabaseKtx = "21.0.0"
+firebaseConfig = "22.0.0"
+firebaseCrashlytics = "19.0.3"
+firebasePerfKtx = "21.0.1"
+fluttergradleplugin = "1.0.0"
+retrofit = "2.9.0"
+converterGson = "2.7.2"
+gson = "2.10.1"
+okhttp = "4.9.3"
+loggingInterceptor = "3.12.1"
+appinvokesdk = "1.2"
+junit = "4.13.2"
+junitVersion = "1.2.1"
+espressoCore = "3.6.1"
+viewpager2 = "1.1.0"
+viewpagerindicator = "1.2.1"
+circleindicator = "2.1.6"
+
+androidSpinkit = "1.4.0"
+lifecycleExtensions = "2.2.0"
+fancybuttons = "1.9.0"
+cycleMenu = "1.0.2"
+indicatorseekbar = "2.1.2"
+pinview = "v1.4"
+pinviewVersion = "1.4.3"
+playServicesAuthApiPhone = "18.1.0"
+playServicesAuth = "21.2.0"
+volley = "1.2.1"
+braintreepayments = "5.4.0"
+stripeAndroid = "16.0.1"
+colorpicker = "1.1.0"
+commonsCsv = "1.8"
+customtabs = "31.1.1"
+zip4j = "2.8.0"
+numberpickerpreference = "1.0.3"
+androidSimpleTooltip = "1.1.0"
+androidTargetTooltip = "2.0.4"
+touchimageview = "1.4.1"
+zoomCropImage = "0.1.2"
+biometric = "1.1.0"
+carousel = "1.2.4"
+fluidSlider = "0.3.1"
+powermenu = "2.1.3"
+viewpagerarrowindicator = "1.0.0"
+viewpagerdotsindicator = "4.1.2"
+dotsindicator = "4.2"
+percentlayout = "1.0.0"
+signseekbar = "1.0.6"
+countrypicker = "0.4.0"
+ccp = "2.2.3"
+androidGifDrawable = "1.2.25"
+coreprogress = "1.0.2"
+design = "31.0.0"
+answerbot = "3.0.0"
+chat = "3.1.0"
+zendeskmessaging = "5.1.0"
+
+##########################################################
+
+
+
+#[modules]
+#old-flexbox = { replacedBy = "flexbox" }
+#"com.google.android:flexbox" = { replacedBy = "com.google.android:flexbox:flexbox" }
+##########################################################
+
+#where to use module and group in toml
+#Group is com.google.http-client, module is google-http-client
+#group+name or module(:)
+#com.google.http-client:google-http-client:1.20.0
