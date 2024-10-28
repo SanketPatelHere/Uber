@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter/cupertino.dart';
 import '../../controllers/CartController.dart';
-import '../../controllers/GetOrderLengthController.dart';
+import '../../controllers/GetUserLengthController.dart';
 import '../../logging/logger_helper.dart';
 import '../../models/OrderModel.dart';
+import '../../models/UserModel.dart';
 import '../../utils/app-constant.dart';
 import '../../utils/colors.dart';
 
@@ -15,18 +16,18 @@ import 'AddReviewScreen.dart';
 import 'SpecificCustomerScreen.dart';
 
 
-class AllOrderScreen extends StatefulWidget {
+class AllUsersScreen extends StatefulWidget {
 
-  AllOrderScreen({
+  AllUsersScreen({
     super.key,
   });
 
   @override
-  State<StatefulWidget> createState() => _AllOrderScreen();
+  State<StatefulWidget> createState() => _AllUsersScreen();
 }
 
-class _AllOrderScreen extends State<AllOrderScreen> {
-  final TAG = "Myy AllOrderScreen ";
+class _AllUsersScreen extends State<AllUsersScreen> {
+  final TAG = "Myy AllUsersScreen ";
   final CarouselController carouselController = CarouselController();
   final CartController cartController = Get.put(CartController());
 
@@ -34,15 +35,15 @@ class _AllOrderScreen extends State<AllOrderScreen> {
   Widget build(BuildContext context) {
     TLoggerHelper.info("${TAG} inside build");
     User? user = FirebaseAuth.instance.currentUser;
-    GetOrderLengthController getOrderLengthController = Get.put(GetOrderLengthController());
+    GetUserLengthController getUserLengthController = Get.put(GetUserLengthController());
 
     return Scaffold(
         appBar: AppBar(
           iconTheme: IconThemeData(color: TColors.white, size: 35),
           backgroundColor: AppConstant.appMainColor,
           title: Obx((){
-            return Text("Orders (${getOrderLengthController.orderControllerLength.toString()})",
-                              style: TextStyle(color: AppConstant.appTextColor));
+            return Text("Users (${getUserLengthController.userControllerLength.toString()})",
+                style: TextStyle(color: AppConstant.appTextColor));
           }),
           centerTitle: true,
         ),
@@ -51,8 +52,8 @@ class _AllOrderScreen extends State<AllOrderScreen> {
         //FutureBuilder(
         StreamBuilder(
             stream: FirebaseFirestore.instance
-                .collection("orders")
-                .orderBy("createdAt", descending: true) //for show new order at top
+                .collection("users")
+                .orderBy("createdOn", descending: true) //for show new order at top
                 .snapshots(),
             builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
               if(snapshot.hasError){
@@ -69,7 +70,7 @@ class _AllOrderScreen extends State<AllOrderScreen> {
               }
 
               if(snapshot.data!.docs.isEmpty){
-                return Center(child: Text("No any Orders found!"));
+                return Center(child: Text("No any Users found!"));
               }
 
               if(snapshot.data!=null){
@@ -86,8 +87,21 @@ class _AllOrderScreen extends State<AllOrderScreen> {
 
                           var data = snapshot.data!.docs[index];
 
-                          //for calculate product price
-                          cartController.fetchProductPrice();
+                          UserModel userModel = UserModel(
+                              uId: data["uId"],
+                              username: data["username"],
+                              email: data["email"],
+                              phone: data["phone"],
+                              userImg: data["userImg"],
+                              userDeviceToken: data["userDeviceToken"],
+                              country: data["country"],
+                              userAddress: data["userAddress"],
+                              street: data["street"],
+                              city: data["city"],
+                              isAdmin: data["isAdmin"],
+                              isActive: data["isActive"],
+                              createdOn: data["createdOn"],
+                          );
 
                           return Card(
                             color: AppConstant.appTextColor,
@@ -98,14 +112,17 @@ class _AllOrderScreen extends State<AllOrderScreen> {
                                 Get.to(()=>SpecificCustomerScreen(docId:data["uId"], customerName:data["customerName"]));
                               },
                               leading: CircleAvatar(
+                               /*errorListerner:(error){
+                                  Icon(Icons.error),
+                                },*/
                                 backgroundColor: AppConstant.appTextColor,
-                                child: Text(data["customerName"][0]),
-                                //backgroundImage:NetworkImage((data["customerName"][0])),
+                                //child: Text("N"),
+                                backgroundImage:NetworkImage(userModel.userImg),
                                 //backgroundImage:CachedNetworkImage(imageUrl:orderModel.productImage[0]),
                               ),
                               //title: Text("New Dress for womens"),
-                              title:Text(data["customerName"]),
-                              subtitle:Text(data["customerPhone"]),
+                              title:Text(userModel.username),
+                              subtitle:Text(userModel.email),
                               trailing:Icon(Icons.edit),
                           )
                           );

@@ -12,6 +12,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 
 import '../auth-ui/WelcomeScreen.dart';
 import 'AllOrderScreen.dart';
+import 'AllUsersScreen.dart';
 
 class MyDrawerWidget extends StatefulWidget {
   const MyDrawerWidget({super.key});
@@ -80,6 +81,10 @@ class _MyDrawerWidgetState extends State<MyDrawerWidget> {
                   leading: Icon(Icons.person, color: AppConstant.appTextColor),
                   title: Text("Users", style: TextStyle(color: AppConstant.appTextColor)),
                   trailing: Icon(Icons.arrow_forward, color: AppConstant.appTextColor),
+                  onTap: (){
+                    Get.back(); //for close drawer
+                    Get.to(()=>AllUsersScreen());
+                  },
                 ),
               ),
 
