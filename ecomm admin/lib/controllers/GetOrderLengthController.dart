@@ -21,7 +21,7 @@ class GetOrderLengthController extends GetxController {
 
         orderControllerSubscription = firestore
           .collection("orders")
-          .where("isAdmin", isEqualTo: false) //get all user count, not admin count
+          //.where("isAdmin", isEqualTo: false) //get all user count, not admin count
           .snapshots()
           .listen((snapshot){
             TLoggerHelper.info("${TAG} inside snapshot size = "+snapshot.size.toString());
