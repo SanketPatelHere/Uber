@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 import 'package:flutter/cupertino.dart';
 import '../../controllers/CartController.dart';
@@ -86,6 +87,8 @@ class _SpecificCustomerScreen extends State<SpecificCustomerScreen> {
                       itemBuilder: (context, index){
 
                         var data = snapshot.data!.docs[index];
+                        String orderDocId = data.id;
+
                         //for add data in reference for order's orderModel
                         OrderModel orderModel = OrderModel(
                           categoryName: data["categoryName"],
@@ -159,8 +162,19 @@ class _SpecificCustomerScreen extends State<SpecificCustomerScreen> {
 
                               ),
                             ),
+
+                          //change order status
+                          trailing:InkWell(
+                              onTap: (){
+                                          showBottomSheet(userDocId:widget.docId, orderModel:orderModel, orderDocId:orderDocId);
+                               },
+                              child: Icon(Icons.more_horiz_outlined)
+                          ),
+                          )
+
                             //status = true => Delivered, Review
-                            trailing: orderModel.status==true
+                        //change user review
+                            /*trailing: orderModel.status==true
                                 ?ElevatedButton(
                                 style: ElevatedButton.styleFrom(
                                     backgroundColor: AppConstant.appMainColor,
@@ -169,7 +183,7 @@ class _SpecificCustomerScreen extends State<SpecificCustomerScreen> {
                                 onPressed: ()=>Get.to(()=>AddReviewScreen(orderModel:orderModel)),
                                 child: Text("Review", style:  Theme.of(context).textTheme.labelMedium!.apply(color: TColors.white),))
                                 :SizedBox.shrink(),
-                          ),
+                          ),*/
                         );
                       },
                     )
@@ -185,4 +199,65 @@ class _SpecificCustomerScreen extends State<SpecificCustomerScreen> {
 
     );
   }
+
+
+
+  //for change order status = Pending(status=false) or Delivered(status=true)
+  void showBottomSheet({required String userDocId, required OrderModel orderModel, required String orderDocId}){
+    TLoggerHelper.info("${TAG} inside showBottomSheet");
+    Get.bottomSheet(
+        Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: ElevatedButton(
+                        onPressed: () async{
+                            EasyLoading.show(status: "Please wait...");
+                            await FirebaseFirestore.instance
+                                .collection("orders")
+                                .doc(userDocId)
+                                .collection("confirmOrders")
+                                .doc(orderDocId)
+                                .update({"status":false});
+                            Get.back(); //for close dialog
+                            EasyLoading.dismiss();
+                        },
+                        child: Padding(padding: const EdgeInsets.all(8),child: Text("Pending"))
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8),
+                    child: ElevatedButton(
+                        onPressed: () async{
+                          EasyLoading.show(status: "Please wait...");
+                          await FirebaseFirestore.instance
+                              .collection("orders")
+                              .doc(userDocId)
+                              .collection("confirmOrders")
+                              .doc(orderDocId)
+                              .update({"status":true});
+                          Get.back(); //for close dialog
+                          EasyLoading.dismiss();
+                        },
+                        child: Padding(padding: const EdgeInsets.all(8),child: Text("Delivered"))
+                    ),
+                  ),
+                ],
+              )
+            ],
+          ),
+        )
+    );
+  }
+
 }

@@ -1,17 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter/cupertino.dart';
+import '../../controllers/CartController.dart';
+import '../../controllers/GetProductLengthController.dart';
+import '../../controllers/GetUserLengthController.dart';
 import '../../logging/logger_helper.dart';
+import '../../models/OrderModel.dart';
 import '../../models/ProductModel.dart';
 import '../../utils/app-constant.dart';
 import '../../utils/colors.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:image_card/image_card.dart';
 
-import 'ProductDetailScreen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
+import 'AddReviewScreen.dart';
+import 'AllProductDetailScreen.dart';
+import 'SpecificCustomerScreen.dart';
+
 
 class AllProductsScreen extends StatefulWidget {
-  const AllProductsScreen({super.key});
+
+  AllProductsScreen({
+    super.key,
+  });
 
   @override
   State<StatefulWidget> createState() => _AllProductsScreen();
@@ -20,23 +31,32 @@ class AllProductsScreen extends StatefulWidget {
 class _AllProductsScreen extends State<AllProductsScreen> {
   final TAG = "Myy AllProductsScreen ";
   final CarouselController carouselController = CarouselController();
+  final CartController cartController = Get.put(CartController());
 
   @override
   Widget build(BuildContext context) {
     TLoggerHelper.info("${TAG} inside build");
+    User? user = FirebaseAuth.instance.currentUser;
+    GetProductLengthController getProductLengthController = Get.put(GetProductLengthController());
+
     return Scaffold(
         appBar: AppBar(
           iconTheme: IconThemeData(color: TColors.white, size: 35),
           backgroundColor: AppConstant.appMainColor,
-          title: Text("All Products", style: TextStyle(color: AppConstant.appTextColor),),
+          title: Obx((){
+            return Text("Products (${getProductLengthController.productControllerLength.toString()})",
+                style: TextStyle(color: AppConstant.appTextColor));
+          }),
           centerTitle: true,
         ),
+
         body:
-        FutureBuilder(
-            future: FirebaseFirestore.instance
+        //FutureBuilder(
+        StreamBuilder(
+            stream: FirebaseFirestore.instance
                 .collection("products")
-                .where("isSale", isEqualTo: false) //if isSale=false
-                .get(),
+                //.orderBy("createdAt ", descending: true) //for show new order at top
+                .snapshots(),
             builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
               if(snapshot.hasError){
                 return const Center(child: Text("No Data Found!"));
@@ -52,26 +72,21 @@ class _AllProductsScreen extends State<AllProductsScreen> {
               }
 
               if(snapshot.data!.docs.isEmpty){
-                return Center(child: Text("No Product Found!"));
+                return Center(child: Text("No any Products found!"));
               }
 
               if(snapshot.data!=null){
-                TLoggerHelper.info("${TAG} productData size = "+snapshot.data!.size.toString());
+                TLoggerHelper.info("${TAG} cartData size = "+snapshot.data!.size.toString());
                 return Padding(
                   padding: EdgeInsets.only(top: 10, bottom: 10, left: 10, right: 10),
                   child: Container(
-                    ///color: TColors.grey2,
-                    //height: Get.height/2,
-                    child:  GridView.builder(
+                      child:
+                      ListView.builder(
                         itemCount: snapshot.data!.docs.length,
                         shrinkWrap: true,
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          crossAxisSpacing: 5, //number of logical pixels between each child along the cross axis
-                          mainAxisSpacing: 5, //number of logical pixels between each child along the main axis
-                          childAspectRatio: 0.60, //ratio of the cross-axis to the main-axis extent of each child
-                        ),
+                        physics: BouncingScrollPhysics(),
                         itemBuilder: (context, index){
+
                           var productData = snapshot.data!.docs[index];
                           ProductModel productModel = ProductModel(
                             categoryId: productData["categoryId"],
@@ -87,49 +102,32 @@ class _AllProductsScreen extends State<AllProductsScreen> {
                             isSale: productData["isSale"],
                             productImage: productData["productImage"],
                           );
-
-
-                          return Row(
-                            children: [
-                              GestureDetector(
-                                onTap: ()=>Get.to(()=>ProductDetailScreen(productModel:productModel)),
-                                child: Padding(
-                                  padding: EdgeInsets.all(5),
-                                  child: Container(
-                                    //decoration:BoxDecoration(color: Colors.red),
-                                    child: FillImageCard(
-                                      color: TColors.grey2,
-                                      borderRadius: 15,
-                                      width: Get.width/2.3,
-                                      heightImage: Get.height/6,
-                                      //imageProvider: AssetImage(TImages.productImage1),
-                                      imageProvider: NetworkImage(productModel.productImage[0]),
-                                      ///imageProvider: Image(fit: BoxFit.contain, image: NetworkImage(productModel.productImage[0]) ) as ImageProvider,
-                                      //imageProvider: CachedNetworkImage(imageUrl: imageUrls, fit: BoxFit.contain, width: Get.width-25,height:110,),
-                                      //tags: [_tag('Category', () {}), _tag('Product', () {})],
-                                      title: Container(
-                                        //color: TColors.grey, //color or decoration
-                                          decoration:BoxDecoration(color: TColors.lightGrey),
-                                          child: Center(
-                                              child: Text(
-                                                productModel.productName, style: Theme.of(context).textTheme.bodyMedium,
-                                                overflow: TextOverflow.ellipsis,
-                                                maxLines: 1,
-                                              )
-                                          )
-                                      ),
-                                      //description: Text("data"),
-                                      footer: Center(child: Text("Price "+productModel.fullPrice, style: Theme.of(context).textTheme.bodyMedium)),
-                                    ),
-                                  ),
-                                ),
-                              )
-                            ],
+                          
+                          return Card(
+                            color: AppConstant.appTextColor,
+                            elevation: 5,
+                            child: ListTile(
+                              //onTap: ((){ Get.to()=>SpecificCustomerScreen(snapshot.data!.docs[index]["uId"], customerName:snapshot.data!.docs[index]["customerName"]));
+                              onTap: (){
+                                Get.to(()=>AllProductDetailScreen(productModel: productModel));
+                              },
+                              leading: CircleAvatar(
+                               /*errorListerner:(error){
+                                  Icon(Icons.error),
+                                },*/
+                                backgroundColor: AppConstant.appTextColor,
+                                //child: Text("N"),
+                                backgroundImage:NetworkImage(productModel.productImage[0]),
+                                //backgroundImage:CachedNetworkImage(imageUrl:orderModel.productImage[0]),
+                              ),
+                              //title: Text("New Dress for womens"),
+                              title:Text(productModel.productName),
+                              subtitle:Text(productModel.productDescription),
+                              trailing:Icon(Icons.arrow_forward_ios),
+                          )
                           );
-                        }
-
-                    ),
-
+                        },
+                      )
                   ),
                 );
               }
@@ -137,7 +135,7 @@ class _AllProductsScreen extends State<AllProductsScreen> {
               return Container();
 
             }
-        )
+        ),
 
     );
   }

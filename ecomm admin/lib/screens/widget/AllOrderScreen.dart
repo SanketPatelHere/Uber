@@ -85,7 +85,6 @@ class _AllOrderScreen extends State<AllOrderScreen> {
                         itemBuilder: (context, index){
 
                           var data = snapshot.data!.docs[index];
-
                           //for calculate product price
                           cartController.fetchProductPrice();
 
@@ -106,7 +105,12 @@ class _AllOrderScreen extends State<AllOrderScreen> {
                               //title: Text("New Dress for womens"),
                               title:Text(data["customerName"]),
                               subtitle:Text(data["customerPhone"]),
-                              trailing:Icon(Icons.edit),
+                              trailing:InkWell(
+                                  /*onTap: (){
+                                    showBottomSheet();
+                                  },*/
+                                  child: Icon(Icons.more_horiz_outlined)
+                              ),
                           )
                           );
                         },
@@ -122,4 +126,5 @@ class _AllOrderScreen extends State<AllOrderScreen> {
 
     );
   }
+
 }

@@ -12,6 +12,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 
 import '../auth-ui/WelcomeScreen.dart';
 import 'AllOrderScreen.dart';
+import 'AllProductsScreen.dart';
 import 'AllUsersScreen.dart';
 
 class MyDrawerWidget extends StatefulWidget {
@@ -123,6 +124,10 @@ class _MyDrawerWidgetState extends State<MyDrawerWidget> {
                   leading: Icon(Icons.production_quantity_limits, color: AppConstant.appTextColor),
                   title: Text("Products", style: TextStyle(color: AppConstant.appTextColor)),
                   trailing: Icon(Icons.arrow_forward, color: AppConstant.appTextColor),
+                  onTap: (){
+                    Get.back(); //for close drawer
+                    Get.to(()=>AllProductsScreen());
+                  },
                 ),
               ),
 
