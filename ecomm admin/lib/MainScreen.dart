@@ -21,10 +21,11 @@ import 'services/getserverkey.dart';
 import 'utils/app-constant.dart';
 import 'package:get/get.dart';
 import 'package:badges/badges.dart' as badges;
-
+import 'package:syncfusion_flutter_charts/charts.dart';
 import 'utils/colors.dart';
 
-//github demo = https://github.com/Warisalikhan786/EasyShopping/blob/main/lib/controllers/google-sign-in-controller.dart
+//github demo user app = https://github.com/Warisalikhan786/EasyShopping/blob/main/lib/controllers/google-sign-in-controller.dart
+//github demo admin app = https://github.com/Warisalikhan786/easy-shopping-admin-panel/blob/main/lib/screens/main-screen.dart
 class MainScreen extends StatefulWidget {
 
   const MainScreen({super.key});
