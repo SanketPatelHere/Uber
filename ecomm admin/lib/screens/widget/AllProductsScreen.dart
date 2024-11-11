@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter/cupertino.dart';
@@ -13,9 +14,11 @@ import '../../utils/colors.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import '../../utils/image_strings.dart';
 import 'AddProductScreen.dart';
 import 'AddReviewScreen.dart';
 import 'AllProductDetailScreen.dart';
+import 'EditProductScreen.dart';
 import 'SpecificCustomerScreen.dart';
 
 
@@ -117,23 +120,28 @@ class _AllProductsScreen extends State<AllProductsScreen> {
                             color: AppConstant.appTextColor,
                             elevation: 5,
                             child: ListTile(
+                              //for product detail screen
                               //onTap: ((){ Get.to()=>SpecificCustomerScreen(snapshot.data!.docs[index]["uId"], customerName:snapshot.data!.docs[index]["customerName"]));
                               onTap: (){
                                 Get.to(()=>AllProductDetailScreen(productModel: productModel));
                               },
+
                               leading: CircleAvatar(
                                /*errorListerner:(error){
                                   Icon(Icons.error),
                                 },*/
                                 //backgroundColor: AppConstant.appTextColor,
                                 //child: Text("N"),
-                                backgroundImage:NetworkImage(productModel.productImage[0]),
+                                backgroundImage: productModel.productImage.length>0?NetworkImage(productModel.productImage[0]):NetworkImage(TImages.imgNotAvailable),
                                 //backgroundImage:CachedNetworkImage(imageUrl:orderModel.productImage[0]),
                               ),
                               //title: Text("New Dress for womens"),
                               title:Text(productModel.productName, style: Theme.of(context).textTheme.bodyMedium),
                               subtitle:Text(productModel.productDescription, style: Theme.of(context).textTheme.bodyMedium),
-                              trailing:Icon(Icons.arrow_forward_ios),
+                              trailing:GestureDetector(
+                                //for edit product
+                                  onTap: ()=>Get.to(()=>EditProductScreen(productModel:productModel)),
+                                  child: Icon(Icons.edit)),
                           )
                           );
                         },
