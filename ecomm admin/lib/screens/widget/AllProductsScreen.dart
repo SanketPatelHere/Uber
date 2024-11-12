@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter/cupertino.dart';
 import '../../controllers/CartController.dart';
+import '../../controllers/CategoryDropDownController.dart';
 import '../../controllers/GetProductLengthController.dart';
 import '../../controllers/GetUserLengthController.dart';
+import '../../controllers/IsSaleController.dart';
 import '../../logging/logger_helper.dart';
 import '../../models/OrderModel.dart';
 import '../../models/ProductModel.dart';
@@ -132,7 +134,7 @@ class _AllProductsScreen extends State<AllProductsScreen> {
                                 },*/
                                 //backgroundColor: AppConstant.appTextColor,
                                 //child: Text("N"),
-                                backgroundImage: productModel.productImage.length>0?NetworkImage(productModel.productImage[0]):NetworkImage(TImages.imgNotAvailable),
+                                backgroundImage: productModel.productImage.length>0?NetworkImage(productModel.productImage[0]):AssetImage(TImages.imgNotAvailable),
                                 //backgroundImage:CachedNetworkImage(imageUrl:orderModel.productImage[0]),
                               ),
                               //title: Text("New Dress for womens"),
@@ -140,7 +142,18 @@ class _AllProductsScreen extends State<AllProductsScreen> {
                               subtitle:Text(productModel.productDescription, style: Theme.of(context).textTheme.bodyMedium),
                               trailing:GestureDetector(
                                 //for edit product
-                                  onTap: ()=>Get.to(()=>EditProductScreen(productModel:productModel)),
+                                  onTap: (){
+                                    //for set categoryid default selected dropdown
+                                    final editProductCategory = Get.put(CategoryDropDownController());
+                                    editProductCategory.setOldValue(productModel.categoryId);
+
+                                    //for set isSale  default selected value
+                                    final isSaleController = Get.put(IsSaleController());
+                                    isSaleController.setIsSaleOldValue(productModel.isSale);
+
+                                    Get.to(()=>EditProductScreen(productModel:productModel));
+
+                                  },
                                   child: Icon(Icons.edit)),
                           )
                           );

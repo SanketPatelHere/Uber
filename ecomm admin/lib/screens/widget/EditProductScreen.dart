@@ -115,7 +115,91 @@ class _EditProductScreenState extends State<EditProductScreen> {
                               },
                             ),
                           ),
-                        )
+                        ),
+                        SizedBox(height: 10),
+
+                      //show defualt selected edit categories dropdown
+                      GetBuilder<CategoryDropDownController>(
+                        init: CategoryDropDownController(),
+                        builder: (categoriesDropDownController) {
+                          return Column(
+                            children: [
+                              Container(
+                                //margin: const EdgeInsets.symmetric(horizontal: 10.0),
+                                child: Card(
+                                  elevation: 10,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: DropdownButton<String>(
+                                      value: categoriesDropDownController.selectedCategoryId?.value,
+                                      items:
+                                      categoriesDropDownController.categories.map((category) {
+                                        return DropdownMenuItem<String>(
+                                          value: category['categoryId'],
+                                          child: Row(
+                                            mainAxisSize: MainAxisSize.max,
+                                            children: [
+                                              CircleAvatar(
+                                                backgroundImage: NetworkImage(
+                                                  category['categoryImg'].toString(),
+                                                ),
+                                              ),
+                                              const SizedBox(width: 20),
+                                              Text(category['categoryName']),
+                                            ],
+                                          ),
+                                        );
+                                      }).toList(),
+                                      onChanged: (String? selectedValue) async {
+                                        TLoggerHelper.info("${TAG} onChanged selectedValue = "+selectedValue.toString());
+                                        //first set selected categoryId
+                                        categoriesDropDownController.setSelectedCategory(selectedValue);
+                                        //then get categoryName from firebase and set it in categoryName
+                                        String? categoryName = await categoriesDropDownController.getCategoryName(selectedValue);
+                                        TLoggerHelper.info("${TAG} onChanged categoryName = "+categoryName.toString());
+                                        categoriesDropDownController.setSelectedCategoryName(categoryName);
+                                      },
+                                      hint: const Text('Select a category',),
+                                      isExpanded: true,
+                                      elevation: 10,
+                                      underline: const SizedBox.shrink(),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+                      SizedBox(height: 10),
+
+                      //show defualt selected edit isSale
+                      GetBuilder(
+                          init:IsSaleController(),
+                          builder: (isSaleController){
+                            return Card(
+                              child: Padding(
+                                padding: EdgeInsets.all(8),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text("Is Sale"),
+                                    Switch(
+                                        activeColor: AppConstant.appMainColor,
+                                        value: isSaleController.isSale.value,
+                                        onChanged: (value){
+                                          isSaleController.toggleIsSale(value);
+                                        }
+                                    )
+                                  ],
+                                ),
+                              ),
+                            );
+                          }
+                      ),
+
+
+
                     ],
                   ),
                 ),

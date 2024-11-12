@@ -7,6 +7,7 @@ import '../../utils/colors.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:image_card/image_card.dart';
 
+import '../../utils/image_strings.dart';
 import 'ProductDetailScreen.dart';
 
 
@@ -88,7 +89,8 @@ class _FlashSaleWidgetState extends State<FlashSaleWidget> {
                                       width: Get.width/2.5,
                                       heightImage: Get.height/13,
                                       //imageProvider: AssetImage(productModel.productImage[0]),
-                                      imageProvider: NetworkImage(productModel.productImage[0]),
+                                      //imageProvider: NetworkImage(productModel.productImage[0]),
+                                      imageProvider: productModel.productImage.length>0?NetworkImage(productModel.productImage[0]):AssetImage(TImages.imgNotAvailable),
                                       //tags: [_tag('Category', () {}), _tag('Product', () {})],
                                       title: Center(child: Text(productModel.productName,
                                         overflow: TextOverflow.ellipsis,

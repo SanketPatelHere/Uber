@@ -9,6 +9,7 @@ import '../../utils/colors.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:image_card/image_card.dart';
 
+import '../../utils/image_strings.dart';
 import 'ProductDetailScreen.dart';
 
 class AllFlashProductScreen extends StatefulWidget {
@@ -101,7 +102,8 @@ class _AllFlashProductScreenState extends State<AllFlashProductScreen> {
                                 width: Get.width/2.3,
                                 heightImage: Get.height/10,
                                 //imageProvider: AssetImage(TImages.productImage1),
-                                imageProvider: NetworkImage(productModel.productImage[0]),
+                                //imageProvider: NetworkImage(productModel.productImage[0]),
+                                imageProvider: productModel.productImage.length>0?NetworkImage(productModel.productImage[0]):AssetImage(TImages.imgNotAvailable),
                                 //imageProvider: CachedNetworkImage(imageUrl: imageUrls, fit: BoxFit.contain, width: Get.width-25,height:110,),
                                 //tags: [_tag('Category', () {}), _tag('Product', () {})],
                                 title: Container(

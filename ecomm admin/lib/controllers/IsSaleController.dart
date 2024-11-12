@@ -20,4 +20,12 @@ class IsSaleController extends GetxController {
     update();
   }
 
+
+  //setIsSaleOldValue
+  void setIsSaleOldValue(bool value){
+    TLoggerHelper.info("${TAG} setIsSaleOldValue value = "+value.toString());
+    isSale.value = value;
+    update();
+  }
+
 }

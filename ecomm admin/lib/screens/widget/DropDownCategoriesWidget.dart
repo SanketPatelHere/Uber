@@ -16,7 +16,8 @@ class DropDownCategoriesWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<CategoryDropDownController>(
+    return
+      GetBuilder<CategoryDropDownController>(
       init: CategoryDropDownController(),
       builder: (categoriesDropDownController) {
         return Column(
