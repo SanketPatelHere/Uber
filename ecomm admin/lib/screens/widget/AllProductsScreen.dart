@@ -1,5 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_swipe_action_cell/core/cell.dart';
 import 'package:get/get.dart';
 import 'package:flutter/cupertino.dart';
 import '../../controllers/CartController.dart';
@@ -117,32 +120,66 @@ class _AllProductsScreen extends State<AllProductsScreen> {
                             isSale: productData["isSale"],
                             productImage: productData["productImage"],
                           );
-                          
-                          return Card(
-                            color: AppConstant.appTextColor,
-                            elevation: 5,
-                            child: ListTile(
-                              //for product detail screen
-                              //onTap: ((){ Get.to()=>SpecificCustomerScreen(snapshot.data!.docs[index]["uId"], customerName:snapshot.data!.docs[index]["customerName"]));
-                              onTap: (){
-                                Get.to(()=>AllProductDetailScreen(productModel: productModel));
-                              },
 
-                              leading: CircleAvatar(
-                               /*errorListerner:(error){
-                                  Icon(Icons.error),
-                                },*/
-                                //backgroundColor: AppConstant.appTextColor,
-                                //child: Text("N"),
-                                backgroundImage: productModel.productImage.length>0?NetworkImage(productModel.productImage[0]):AssetImage(TImages.imgNotAvailable),
-                                //backgroundImage:CachedNetworkImage(imageUrl:orderModel.productImage[0]),
-                              ),
-                              //title: Text("New Dress for womens"),
-                              title:Text(productModel.productName, style: Theme.of(context).textTheme.bodyMedium),
-                              subtitle:Text(productModel.productDescription, style: Theme.of(context).textTheme.bodyMedium),
-                              trailing:GestureDetector(
-                                //for edit product
+                          return SwipeActionCell(
+                              key: ObjectKey(productModel.productId),
+                              trailingActions: [
+                              SwipeAction(
+                              title: "Delete",
+                              forceAlignmentToBoundary: true, //align end
+                              performsFirstActionWithFullSwipe: true, //drag cell a long distance
+                              onTap: (CompletionHandler handler) async{
+                                Get.defaultDialog(
+                                    title: "Delete Product",
+                                    //middleText: "Pick an image from the camera or gallery",
+                                    content: Text("Are you sure you want to delete this product?"),
+                                    textCancel: "Cancel",
+                                    textConfirm: "Delete",
+                                    contentPadding: EdgeInsets.all(10),
+                                    confirmTextColor: TColors.white,
+                                  onCancel: (){
+                                    //Get.back(); //for close dialog
+                                  },
+                                  onConfirm: ()async{
+                                      Get.back(); //for close dialog
+                                    EasyLoading.show(status: "Please Wait");
+
+                                    //for remove images from storage
+                                    await deleteImagesFromStorage(productModel.productImage.toString());
+                                    //for remove whole product from firebasefirestore
+                                    await FirebaseFirestore.instance
+                                        .collection("products")
+                                        .doc(productModel.productId)
+                                        .delete();
+
+                                    EasyLoading.dismiss();
+                                  },
+
+                                );
+                              }
+                              )
+                              ],
+                              child: Card(
+                                  color: AppConstant.appTextColor,
+                                  elevation: 5,
+                                  child: ListTile(
+                                  //for product detail screen
+                                  //onTap: ((){ Get.to()=>SpecificCustomerScreen(snapshot.data!.docs[index]["uId"], customerName:snapshot.data!.docs[index]["customerName"]));
                                   onTap: (){
+                                  Get.to(()=>AllProductDetailScreen(productModel: productModel));
+                                  },
+
+                                  leading: CircleAvatar(
+
+                                  backgroundImage: productModel.productImage.length>0?NetworkImage(productModel.productImage[0]):AssetImage(TImages.imgNotAvailable),
+                                  //backgroundImage:CachedNetworkImage(imageUrl:orderModel.productImage[0]),
+                                  ),
+                                  //title: Text("New Dress for womens"),
+                                  title:Text(productModel.productName, style: Theme.of(context).textTheme.bodyMedium),
+                                  subtitle:Text(productModel.productDescription, style: Theme.of(context).textTheme.bodyMedium),
+                                  trailing:GestureDetector(
+                                    //for edit product
+                                    onTap: (){
                                     //for set categoryid default selected dropdown
                                     final editProductCategory = Get.put(CategoryDropDownController());
                                     editProductCategory.setOldValue(productModel.categoryId);
@@ -153,10 +190,13 @@ class _AllProductsScreen extends State<AllProductsScreen> {
 
                                     Get.to(()=>EditProductScreen(productModel:productModel));
 
-                                  },
-                                  child: Icon(Icons.edit)),
-                          )
+                                    },
+                                    child: Icon(Icons.edit)),
+                                  )
+                             ),
                           );
+
+
                         },
                       )
                   ),
@@ -170,4 +210,22 @@ class _AllProductsScreen extends State<AllProductsScreen> {
 
     );
   }
+
+  //delete images start
+  //1.from storage
+  Future deleteImagesFromStorage(String imageUrl) async{
+    TLoggerHelper.info("${TAG} inside deleteImagesFromStorage imageUrl = "+imageUrl.toString());
+    final FirebaseStorage storage = FirebaseStorage.instance;
+    try{
+      //remove by passing url
+      Reference reference = storage.refFromURL(imageUrl);
+      await reference.delete();
+    }
+    catch(e){
+      TLoggerHelper.info("${TAG} inside deleteImagesFromStorage Error in catch e = "+e.toString());
+    }
+  }
+//delete images end
+
+
 }

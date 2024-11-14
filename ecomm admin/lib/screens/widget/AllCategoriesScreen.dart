@@ -1,7 +1,11 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_swipe_action_cell/core/cell.dart';
 import 'package:get/get.dart';
 import 'package:flutter/cupertino.dart';
 import '../../controllers/BannerController.dart';
+import '../../controllers/EditCategoryController.dart';
 import '../../logging/logger_helper.dart';
 import '../../models/CategoriesModel.dart';
 import '../../utils/app-constant.dart';
@@ -9,8 +13,12 @@ import '../../utils/colors.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:image_card/image_card.dart';
 
+import 'AddCategoryScreen.dart';
+import 'AddProductScreen.dart';
 import 'AllSingleCategoryProductScreen.dart';
+import 'EditCategoryScreen.dart';
 
+//https://github.com/Warisalikhan786/easy-shopping-admin-panel/blob/main/lib/screens/all_categories_screen.dart
 class AllCategoriesScreen extends StatefulWidget {
   const AllCategoriesScreen({super.key});
 
@@ -32,10 +40,23 @@ class _AllCategoriesScreenState extends State<AllCategoriesScreen> {
           backgroundColor: AppConstant.appMainColor,
           title: Text("All Categories", style: TextStyle(color: AppConstant.appTextColor),),
           centerTitle: true,
+          actions: [
+            GestureDetector(
+              onTap: ()=>Get.to(()=>AddCategoryScreen()),
+              child: Padding(
+                padding: const EdgeInsets.all(10),
+                child: Icon(Icons.add),
+              ),
+            )
+          ],
         ),
         body:
-        FutureBuilder(
-          future: FirebaseFirestore.instance.collection("categories").get(),
+        //FutureBuilder(
+        StreamBuilder(
+            stream: FirebaseFirestore.instance
+                .collection("categories")
+                //.orderBy("createdAt ", descending: true) //for show new order at top
+                .snapshots(),
           builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot){
             if(snapshot.hasError){
               return const Center(child: Text("No Data Found!"));
@@ -54,76 +75,88 @@ class _AllCategoriesScreenState extends State<AllCategoriesScreen> {
               return Center(child: Text("No Category Found!"));
             }
 
-            if(snapshot.data!=null){
-              return
-                Padding(
-                  padding: EdgeInsets.all(10),
-                  child: GridView.builder(
-                      itemCount: snapshot.data!.docs.length,
-                      shrinkWrap: true,
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 3, //number of logical pixels between each child along the cross axis
-                        mainAxisSpacing: 3, //number of logical pixels between each child along the main axis
-                        childAspectRatio: 1.19, //ratio of the cross-axis to the main-axis extent of each child
-                      ),
-                      itemBuilder: (context, index){
-                  var data = snapshot.data!.docs[index];
+            if (snapshot.data != null) {
+              return ListView.builder(
+                shrinkWrap: true,
+                physics: const BouncingScrollPhysics(),
+                itemCount: snapshot.data!.docs.length,
+                itemBuilder: (context, index) {
+                  final data = snapshot.data!.docs[index];
+
                   CategoriesModel categoriesModel = CategoriesModel(
-                    categoryId: data["categoryId"],
-                    categoryImg: data["categoryImg"],
-                    categoryName: data["categoryName"],
-                    createdAt: data["createdAt"],
-                    updatedAt: data["updatedAt"],
+                    categoryId: data['categoryId'],
+                    categoryName: data['categoryName'],
+                    categoryImg: data['categoryImg'],
+                    createdAt: data['createdAt'],
+                    updatedAt: data['updatedAt'],
                   );
 
-                    return Row(
-                      children: [
-                        GestureDetector(
-                          onTap: ()=>Get.to(()=>AllSingleCategoryProductScreen(categoryId:categoriesModel.categoryId, categoryName: categoriesModel.categoryName)),
-                          child: Padding(
-                            padding: EdgeInsets.all(5),
-                            child: Container(
-                              //decoration:BoxDecoration(color: Colors.red),
-                              child: FillImageCard(
-                                color: TColors.grey2,
-                                borderRadius: 15,
-                                width: Get.width/2.3,
-                                heightImage: Get.height/10,
-                                //imageProvider: AssetImage(TImages.productImage1),
-                                imageProvider: NetworkImage(categoriesModel.categoryImg),
-                                //imageProvider: CachedNetworkImage(imageUrl: imageUrls, fit: BoxFit.contain, width: Get.width-25,height:110,),
-                                //tags: [_tag('Category', () {}), _tag('Product', () {})],
-                                title: Container(
-                                    //color: TColors.grey2, //color or decoration
-                                    decoration:BoxDecoration(color: TColors.grey),
-                                    child: Center(
-                                        child: Text(
-                                          categoriesModel.categoryName,
-                                          style: Theme.of(context).textTheme.bodyMedium
-                                          //style: TextStyle(fontSize: 13, color: Colors.black),
-                                        )
-                                    )
-                                ),
-                                //description: Text("data"),
-                                //footer: Text("footer"),
-                              ),
-                            ),
-                          ),
-                        )
-                      ],
-                    );
-                 }
+                  return SwipeActionCell(
+                    key: ObjectKey(categoriesModel.categoryId),
 
-                ),
-                );
+                    /// this key is necessary
+                    trailingActions: <SwipeAction>[
+                      SwipeAction(
+                          title: "Delete",
+                          onTap: (CompletionHandler handler) async {
+                            await Get.defaultDialog(
+                              title: "Delete Product",
+                              content: const Text(
+                                  "Are you sure you want to delete this product?"),
+                              textCancel: "Cancel",
+                              textConfirm: "Delete",
+                              contentPadding: const EdgeInsets.all(10.0),
+                              confirmTextColor: Colors.white,
+                              onCancel: () {},
+                              onConfirm: () async {
+                                Get.back(); // Close the dialog
+                                EasyLoading.show(status: 'Please wait..');
+                                EditCategoryController editCategoryController = Get.put(EditCategoryController(categoriesModel: categoriesModel));
+
+                                //for remove category image from storage
+                                await editCategoryController.deleteImagesFromStorage(categoriesModel.categoryImg);
+                                //for remove whole category from firebasefirestore
+                                await editCategoryController.deleteWholeCategoryFromFireStore(categoriesModel.categoryId);
+
+                                EasyLoading.dismiss();
+                              },
+                              buttonColor: Colors.red,
+                              cancelTextColor: Colors.black,
+                            );
+                          },
+                          color: Colors.red),
+                    ],
+                    child: Card(
+                      elevation: 5,
+                      child: ListTile(
+                        onTap: () {},
+                        leading: CircleAvatar(
+                          backgroundColor: AppConstant.appSecondaryColor,
+                          backgroundImage: CachedNetworkImageProvider(
+                            categoriesModel.categoryImg.toString(),
+                            errorListener: (err) {
+                              // Handle the error here
+                              const Icon(Icons.error);
+                            },
+                          ),
+                        ),
+                        title: Text(categoriesModel.categoryName),
+                        subtitle: Text(categoriesModel.categoryId),
+                        trailing: GestureDetector(
+                            onTap: () => {
+                              Get.to(() => EditCategoryScreen(categoriesModel: categoriesModel),)
+                            },
+                            child: const Icon(Icons.edit)),
+                      ),
+                    ),
+                  );
+                },
+              );
             }
 
             return Container();
-
-          }
-      )
-
+          },
+        ),
     );
   }
 }
