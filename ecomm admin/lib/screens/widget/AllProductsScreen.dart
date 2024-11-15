@@ -175,8 +175,10 @@ class _AllProductsScreen extends State<AllProductsScreen> {
                                   //backgroundImage:CachedNetworkImage(imageUrl:orderModel.productImage[0]),
                                   ),
                                   //title: Text("New Dress for womens"),
-                                  title:Text(productModel.productName, style: Theme.of(context).textTheme.bodyMedium),
-                                  subtitle:Text(productModel.productDescription, style: Theme.of(context).textTheme.bodyMedium),
+                                  //title:Text(productModel.productName, style: Theme.of(context).textTheme.bodyMedium),
+                                  title:Text(productModel.productName),
+                                  //subtitle:Text(productModel.productDescription, style: Theme.of(context).textTheme.bodyMedium),
+                                  subtitle:Text(productModel.productDescription),
                                   trailing:GestureDetector(
                                     //for edit product
                                     onTap: (){

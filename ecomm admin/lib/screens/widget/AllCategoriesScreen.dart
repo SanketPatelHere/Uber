@@ -42,7 +42,7 @@ class _AllCategoriesScreenState extends State<AllCategoriesScreen> {
           centerTitle: true,
           actions: [
             GestureDetector(
-              onTap: ()=>Get.to(()=>AddCategoryScreen()),
+              onTap: ()=>Get.to(()=>AddCategoriesScreen()),
               child: Padding(
                 padding: const EdgeInsets.all(10),
                 child: Icon(Icons.add),
@@ -101,8 +101,7 @@ class _AllCategoriesScreenState extends State<AllCategoriesScreen> {
                           onTap: (CompletionHandler handler) async {
                             await Get.defaultDialog(
                               title: "Delete Product",
-                              content: const Text(
-                                  "Are you sure you want to delete this product?"),
+                              content: const Text("Are you sure you want to delete this product?"),
                               textCancel: "Cancel",
                               textConfirm: "Delete",
                               contentPadding: const EdgeInsets.all(10.0),
@@ -140,8 +139,10 @@ class _AllCategoriesScreenState extends State<AllCategoriesScreen> {
                             },
                           ),
                         ),
-                        title: Text(categoriesModel.categoryName),
-                        subtitle: Text(categoriesModel.categoryId),
+                        title: Text(categoriesModel.categoryName, style: Theme.of(context).textTheme.bodyMedium),
+                        //title: Text(categoriesModel.categoryName),
+                        subtitle:Text(categoriesModel.categoryId, style: Theme.of(context).textTheme.bodyMedium),
+                        //subtitle: Text(categoriesModel.categoryId),
                         trailing: GestureDetector(
                             onTap: () => {
                               Get.to(() => EditCategoryScreen(categoriesModel: categoriesModel),)

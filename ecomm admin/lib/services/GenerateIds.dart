@@ -24,4 +24,21 @@ class GenerateIds{
     return formattedProductId;
 
   }
+
+  static String generateCategoryId(){
+    String formattedCategoryId;
+    String uuid = const Uuid().v4(); //random id //109156be
+    //String uuid = const Uuid().v6(); //time-based id //1ebbc608
+
+    //PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    //TLoggerHelper.info("${TAG} packageInfo.appName = "+packageInfo.appName.toString()); //ecomm_4523f
+
+    //customized id with app name
+    formattedCategoryId = "ecomm_${uuid.substring(0,5)}";
+    //ecomm_dacd7
+    TLoggerHelper.info("${TAG} formattedCategoryId = "+formattedCategoryId.toString()); //ecomm_4523f
+
+    return formattedCategoryId;
+
+  }
 }
