@@ -22,7 +22,8 @@ class AddCategoryImagesController extends GetxController {
   final TAG = "Myy AddCategoryImagesController ";
   final ImagePicker _picker = ImagePicker();
   RxList<XFile> selectedImages = <XFile>[].obs; //for select image from camera or gallery
-  final RxList<String> arrImageUrl = <String>[].obs; //for upload images in storage
+  final RxList<String> arrImageUrl = <String>[].obs; //for upload multiple images in storage
+  //final Rx<String> arrImageUrl =  ''.obs; //for upload single image in storage
   final FirebaseStorage storageRef = FirebaseStorage.instance;
 
   Future<void> showImagePickerDialog() async{

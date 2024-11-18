@@ -19,7 +19,7 @@ class EditCategoryController extends GetxController {
   final TAG = "Myy EditCategoryController ";
   CategoriesModel  categoriesModel ;
   EditCategoryController({required this.categoriesModel});
-  RxList<String> categoryImg  = <String>[].obs;
+  Rx<String> categoryImg = ''.obs;
 
     @override
     void onInit() {
@@ -44,14 +44,15 @@ class EditCategoryController extends GetxController {
           final data = snapshot.data() as Map<String, dynamic>?;
            TLoggerHelper.info("${TAG} getRealTimeCategoryImg data = "+data.toString());
            if(data!=null && data["categoryImg"]!=null){
-             categoryImg.value = List<String>.from(data["categoryImg"] as List<dynamic>);
+             // Update RxString
+             categoryImg.value = data['categoryImg'].toString();
+             //categoryImg.value = List<String>.from(data["categoryImg"] as List<dynamic>);
              update();
              TLoggerHelper.info("${TAG} getRealTimeCategoryImg categoryImg.value = "+categoryImg.value.toString());
            }
          //}
       });
 
-      TLoggerHelper.info("${TAG} getRealTimeCategoryImg categoryImg length = "+categoryImg.length.toString());
 
     }
 

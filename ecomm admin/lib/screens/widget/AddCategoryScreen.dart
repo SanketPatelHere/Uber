@@ -52,14 +52,18 @@ class _AddCategoriesScreenState extends State<AddCategoriesScreen> {
     TLoggerHelper.info("${TAG} inside build");
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Add Categories"),
+        iconTheme: IconThemeData(color: TColors.white, size: 35),
         backgroundColor: AppConstant.appMainColor,
+        title:  Text("Add Category", style: TextStyle(color: AppConstant.appTextColor)),
+        centerTitle: true,
       ),
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
         child: Container(
           child: Column(
             children: [
+
+              //for Select Images layout
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Row(
@@ -76,7 +80,7 @@ class _AddCategoriesScreenState extends State<AddCategoriesScreen> {
                 ),
               ),
 
-              //show Images
+              //for show Images
               GetBuilder<AddCategoryImagesController>(
                 init: AddCategoryImagesController(),
                 builder: (imageController) {
@@ -129,6 +133,8 @@ class _AddCategoriesScreenState extends State<AddCategoriesScreen> {
                 },
               ),
 
+              //todo form start
+              //Category Name
               const SizedBox(height: 40.0),
               Container(
                 height: 65,
@@ -151,6 +157,7 @@ class _AddCategoriesScreenState extends State<AddCategoriesScreen> {
                   ),
                 ),
               ),
+              //todo form end
 
               ElevatedButton(
                 onPressed: () async {
@@ -161,7 +168,17 @@ class _AddCategoriesScreenState extends State<AddCategoriesScreen> {
                     TLoggerHelper.info("${TAG} savebutton uploadFile final arrImageUrl = "+addCategoryImagesController.arrImageUrl.toString());
 
                     String categoryId = GenerateIds.generateCategoryId();
-                    String cateImg = addCategoryImagesController.arrImageUrl[0].toString() as String; //not array, only 1 image
+                    TLoggerHelper.info("${TAG} savebutton addCategoryImagesController.arrImageUrl = "+addCategoryImagesController.arrImageUrl.toString());
+                    String cateImg = "";
+                    if(addCategoryImagesController.arrImageUrl.length>0){
+                      TLoggerHelper.info("${TAG} savebutton addCategoryImagesController.arrImageUrl2 = "+addCategoryImagesController.arrImageUrl[0].toString());
+                      cateImg = addCategoryImagesController.arrImageUrl[0].toString() as String; //not array, only 1 image
+                      //image selected
+                    }
+                    else{
+                      //no any image selected
+                    }
+
                     TLoggerHelper.info("${TAG} savebutton cateImg = "+cateImg);
                     if(categoryNameController.text!="")
                     {
@@ -179,8 +196,8 @@ class _AddCategoriesScreenState extends State<AddCategoriesScreen> {
                           .collection('categories')
                           .doc(categoryId)
                           .set(categoriesModel.toMap());
-                      TLoggerHelper.info("${TAG} Category Uploaded Successfully");
-                      TLoaders.successSnakeBar(title: "Success", message: "Category Uploaded Successfully");
+                      TLoggerHelper.info("${TAG} Category Added Successfully");
+                      TLoaders.successSnakeBar(title: "Success", message: "Category Added Successfully");
                       //Get.to(AllProductsScreen());
                       Get.off(AllCategoriesScreen());
                       //Get.offAll(AllProductsScreen());
@@ -195,6 +212,7 @@ class _AddCategoriesScreenState extends State<AddCategoriesScreen> {
                   }
                   catch(e){
                     EasyLoading.dismiss();
+                    TLoaders.errorSnakeBar(title: "Error in Category Upload", message: "Something went wrong");
                     TLoggerHelper.info("${TAG} Error in catch Category Upload  e = "+e.toString());
                   }
                 },

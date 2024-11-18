@@ -138,7 +138,7 @@ class _MyDrawerWidgetState extends State<MyDrawerWidget> {
                 child: ListTile(
                   titleAlignment: ListTileTitleAlignment.center,
                   leading: Icon(Icons.category, color: AppConstant.appTextColor),
-                  title: Text("Categories", style: TextStyle(color: AppConstant.appTextColor)),
+                  title: Text("Category", style: TextStyle(color: AppConstant.appTextColor)),
                   trailing: Icon(Icons.arrow_forward, color: AppConstant.appTextColor),
                   onTap: (){
                     Get.back(); //for close drawer
