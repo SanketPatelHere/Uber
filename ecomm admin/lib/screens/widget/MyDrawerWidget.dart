@@ -14,6 +14,7 @@ import '../auth-ui/WelcomeScreen.dart';
 import 'AllCategoriesScreen.dart';
 import 'AllOrderScreen.dart';
 import 'AllProductsScreen.dart';
+import 'AllReviewsScreen.dart';
 import 'AllUsersScreen.dart';
 
 class MyDrawerWidget extends StatefulWidget {
@@ -146,6 +147,22 @@ class _MyDrawerWidgetState extends State<MyDrawerWidget> {
                   },
                 ),
               ),
+
+              //Reviews
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: ListTile(
+                  titleAlignment: ListTileTitleAlignment.center,
+                  leading: Icon(Icons.category, color: AppConstant.appTextColor),
+                  title: Text("Reviews", style: TextStyle(color: AppConstant.appTextColor)),
+                  trailing: Icon(Icons.arrow_forward, color: AppConstant.appTextColor),
+                  onTap: (){
+                    Get.back(); //for close drawer
+                    Get.to(()=>AllReviewsScreen());
+                  },
+                ),
+              ),
+
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: ListTile(

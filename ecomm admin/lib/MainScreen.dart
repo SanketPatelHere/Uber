@@ -1,9 +1,14 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'controllers/CartController.dart';
 import 'controllers/FcmService.dart';
+import 'controllers/GetAllOrdersChart.dart';
 import 'controllers/NotificationController.dart';
 import 'logging/logger_helper.dart';
+import 'models/ChartData.dart';
+import 'screens/auth-ui/SignInScreen.dart';
 import 'screens/widget/AllCategoriesScreen.dart';
 import 'screens/widget/AllFlashProductScreen.dart';
 import 'screens/widget/AllProductsScreen.dart';
@@ -45,7 +50,7 @@ class _MainScreen extends State<MainScreen> {
 
   @override
   void initState()  {
-    TLoggerHelper.info("${TAG} inside build");
+    TLoggerHelper.info("${TAG} inside initState");
     super.initState();
     notificationService.requestNotificationPermission();
     notificationService.getDeviceToken();
@@ -57,171 +62,95 @@ class _MainScreen extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     TLoggerHelper.info("${TAG} inside build");
+    final GetAllOrdersChart getAllOrdersChart = Get.put(GetAllOrdersChart());
     return Scaffold(
       appBar: AppBar(
-        iconTheme: IconThemeData(color: Colors.white, size: 35),
         backgroundColor: AppConstant.appMainColor,
-        title: Text(AppConstant.appMainName, style: TextStyle(color: AppConstant.appTextColor),),
-        centerTitle: true,
+        title: const Text("Admin Panel"),
         actions: [
-          //for notification
-
-
-          Obx((){
-          return InkWell(
-              onTap: () async{
-                //todo for get firebase server key start
-                //GetServerKey getServerKey = GetServerKey();
-                //await getServerKey.getServerKeyToken();
-                //final GetDeviceTokenController getDeviceTokenController = Get.put(GetDeviceTokenController());
-                //var token1 = await getDeviceTokenController.deviceToken.toString();
-                //TLoggerHelper.info("${TAG} notification token1 = "+token1);
-
-                //for send push notification from app =
-                /*await SendNotificationService.sendNotificationUsingApi(
-                    //token:"dg70JOl-QdSP6fs_GwGCmd:APA91bFURnO5ew6thVHjVjnGrmpH2R6U_IdJlnyuMfBicZOdpSEQO1xtKpqB_Njh0zQWjSj1aKN6NgQ1FjKhnjnXV3dLe5g9fCW2-TmG7BJ4GiG3RvAlI2Rc6cq2n0pmr3q0o0tI9yIf",
-                    //token: token1, //for specific user token send
-                    token: "", //for all user send(topic)
-                    title:"Order successfully placed",
-                    body:"notification body", //orderModel.productDescription,
-                    //data:{},
-                    data:{
-                      "screen":"notification"
-                    }
-                );*/
-
-                //todo for get firebase server key end
-                Get.to(()=>NotificationScreen());
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(10),
-                //child: Icon(Icons.notifications, color: TColors.white, size: 35),
-                child:  badges.Badge(
-                  //badgeContent: Text('3'),
-                  badgeContent: Text("${notificationController.notificationCount.value}",
-                  style: TextStyle(color: Colors.white)),
-                  position: badges.BadgePosition.topEnd(top: -12, end:-8),
-                  showBadge: notificationController.notificationCount.value>0,
-                  child: Icon(Icons.notifications, color: TColors.white, size: 35),
-                  badgeAnimation: badges.BadgeAnimation.size(
-                    animationDuration: Duration(seconds: 1),
-                    colorChangeAnimationDuration: Duration(seconds: 1),
-                    loopAnimation: false,
-                    curve: Curves.fastOutSlowIn,
-                    colorChangeAnimationCurve: Curves.easeInCubic,
-                  ),
-                ),
-              )
-            );
-         }),
-
-          Obx(() {
-            return InkWell(
-                onTap: () {
-                  Get.to(() => CartScreen());
-                },
-
-            child: Padding(
-                padding: const EdgeInsets.all(10),
-                //child: Icon(Icons.notifications, color: TColors.white, size: 35),
-                child:  badges.Badge(
-                        //badgeContent: Text('3'),
-                        badgeContent: Text("${cartController.cartCount.value}",
-                        style: TextStyle(color: Colors.white)),
-                        position: badges.BadgePosition.topEnd(top: -12, end:-8),
-                        showBadge: cartController.cartCount.value>0,
-                        child:Icon(Icons.shopping_cart, color: TColors.white, size: 35),
-                        badgeAnimation: badges.BadgeAnimation.size(
-                        animationDuration: Duration(seconds: 1),
-                        colorChangeAnimationDuration: Duration(seconds: 1),
-                        loopAnimation: false,
-                        curve: Curves.fastOutSlowIn,
-                        colorChangeAnimationCurve: Curves.easeInCubic,
-                        ),
-                )
-            )
-            );
-
-          }
-          ),
-          //for cart
-
-          //for logout
-          /*GestureDetector(
-            onTap: () async{
-              //for google sign out
-                GoogleSignIn googleSignIn = GoogleSignIn();
-                await googleSignIn.signOut();
-
-                //for email sign out(if login with email)
-                FirebaseAuth _auth = FirebaseAuth.instance;
-                await _auth.signOut();
-                Get.offAll(()=>WelcomeScreen());
+          GestureDetector(
+            onTap: () async {
+              await FirebaseAuth.instance.signOut();
+              Get.offAll(() => SignInScreen());
             },
             child: Padding(
-              padding: const EdgeInsets.all(8),
-              child: Icon(Icons.logout),
+              padding: EdgeInsets.all(8.0),
+              child: Icon(
+                Icons.logout,
+                color: Colors.white,
+              ),
             ),
-          )*/
+          ),
         ],
       ),
-      body: SingleChildScrollView(
-        physics: BouncingScrollPhysics(),
-        child: Container(
-          child: Column(
-            children: [
-              SizedBox(height:Get.height/90),
+      drawer: MyDrawerWidget(),
+      body: Container(
+        child: Column(
+          children: [
+            Obx(() {
+              final monthlyData = getAllOrdersChart.monthlyOrderData;
+              if (monthlyData.isEmpty) {
+                TLoggerHelper.info("${TAG} if empty monthlyData = "+monthlyData.toString());
+                return Container(
+                  height: Get.height / 2,
+                  child: Center(
+                    child: CupertinoActivityIndicator(),
+                  ),
+                );
+              }
+              else {
+                TLoggerHelper.info("${TAG} if not empty monthlyData = "+monthlyData.toString()); // [Instance of 'ChartData']
+                return SizedBox(
+                  height: Get.height / 2,
+                  child: SfCartesianChart(
+                    tooltipBehavior: TooltipBehavior(enable: true),
+                    primaryXAxis: CategoryAxis(arrangeByIndex: true),
+                      //for dynamic data of users orders
+                    series: <LineSeries<ChartData, String>>[
+                      LineSeries<ChartData, String>(
+                        dataSource: monthlyData,
+                        width: 2.5,
+                        color: AppConstant.appMainColor,
+                        xValueMapper: (ChartData data, _) => data.month,
+                        yValueMapper: (ChartData data, _) => data.value,
+                        name: "Monthly Orders",
+                        markerSettings: MarkerSettings(isVisible: true),
+                      )
+                    ],
 
-              BannersWidget(),
-
-              //heading
-              HeadingWidget(
-                headingTitle:"Categories",
-                headingSubTitle:"According to new arrival",
-                onTap:(){
-                  Get.to(()=>AllCategoriesScreen());
-                },
-                buttonText:"See More >",
-              ),
-
-              CategoriesWidget(),
-
-              //heading
-              HeadingWidget(
-                headingTitle:"Flash Sale",
-                headingSubTitle:"According new arrival",
-                onTap:(){
-                  Get.to(()=>AllFlashProductScreen()); //show only sale products
-                },
-                buttonText:"See More >",
-              ),
-
-              FlashSaleWidget(), //show only sale products
-
-
-              //heading
-              HeadingWidget(
-                headingTitle:"All Products",
-                headingSubTitle:"According new arrival",
-                onTap:(){
-                  Get.to(()=>AllProductsScreen()); //show not sale products
-                },
-                buttonText:"See More >",
-              ),
-
-              //show not sale products
-              AllProductsWidget(),
-
-            ],
-          ),
+                      //for demo fixed data
+                      /*series: <LineSeries<SalesData, String>>[
+                        LineSeries<SalesData, String>(
+                            dataSource:  <SalesData>[
+                              SalesData('Jan', 35),
+                              SalesData('Feb', 28),
+                              SalesData('Mar', 34),
+                              SalesData('Apr', 32),
+                              SalesData('May', 40),
+                            *//*  SalesData('May', 40),
+                              SalesData('May', 40),
+                              SalesData('May', 40),
+                              SalesData('May', 40)*//*
+                            ],
+                            xValueMapper: (SalesData sales, _) => sales.year,
+                            yValueMapper: (SalesData sales, _) => sales.sales,
+                            // Enable data label
+                            dataLabelSettings: DataLabelSettings(isVisible: true)
+                        )
+                      ]*/
+                  ),
+                );
+              }
+            })
+          ],
         ),
       ),
-      drawer: MyDrawerWidget(),
-
-
     );
   }
+}
 
-
-
+class SalesData {
+  SalesData(this.year, this.sales);
+  final String year; //month
+  final double sales;
 }

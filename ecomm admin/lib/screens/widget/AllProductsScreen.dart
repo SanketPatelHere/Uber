@@ -160,7 +160,7 @@ class _AllProductsScreen extends State<AllProductsScreen> {
                               )
                               ],
                               child: Card(
-                                  color: AppConstant.appTextColor,
+                                  //color: AppConstant.appTextColor,
                                   elevation: 5,
                                   child: ListTile(
                                   //for product detail screen
@@ -175,10 +175,10 @@ class _AllProductsScreen extends State<AllProductsScreen> {
                                   //backgroundImage:CachedNetworkImage(imageUrl:orderModel.productImage[0]),
                                   ),
                                   //title: Text("New Dress for womens"),
-                                  //title:Text(productModel.productName, style: Theme.of(context).textTheme.bodyMedium),
-                                  title:Text(productModel.productName),
-                                  //subtitle:Text(productModel.productDescription, style: Theme.of(context).textTheme.bodyMedium),
-                                  subtitle:Text(productModel.productDescription),
+                                  title:Text(productModel.productName, style: Theme.of(context).textTheme.labelLarge),
+                                  //title:Text(productModel.productName),
+                                  subtitle:Text(productModel.productDescription, style: Theme.of(context).textTheme.bodyMedium),
+                                  //subtitle:Text(productModel.productDescription),
                                   trailing:GestureDetector(
                                     //for edit product
                                     onTap: (){
