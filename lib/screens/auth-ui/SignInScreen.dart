@@ -156,6 +156,7 @@ class _SignInScreenState extends State<SignInScreen>{
                               var userData = await getUserDataController.getUserData(userCredential!.user!.uid);
                               //todo for check user is admin or not end
 
+
                               if(userCredential.user!.emailVerified){
                                 TLoggerHelper.info("${TAG} inside userData = "+userData.toString());
                                 TLoggerHelper.info("${TAG} inside userData[0] = "+userData[0].toString());
