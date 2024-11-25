@@ -88,6 +88,9 @@
         <!--for firebase push message end-->
 
 
+        <meta-data android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyCXB2gsB33hSm-HZnGqRk0leojAKLC7E2E"/>
+
     </application>
 
 
@@ -100,5 +103,8 @@
             <data android:scheme="https" />
         </intent>
     </queries>
+
+
+
 
 </manifest>

@@ -13,7 +13,8 @@ import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:intl/intl.dart';
 import 'package:firebase_database/firebase_database.dart';
 //import 'package:platform_device_id/platform_device_id.dart';
-
+import 'package:permission_handler/permission_handler.dart';
+import 'package:geolocator/geolocator.dart';
 
 
 /*
@@ -53,7 +54,18 @@ void main() async{
 
   FirebaseMessaging.onBackgroundMessage(_firebaseBackgroundHandler);
 
-  TLoggerHelper.info("${TAG}build called");
+  TLoggerHelper.info("${TAG} build called");
+
+  await Permission.locationWhenInUse.isDenied.then((value) async{
+    TLoggerHelper.info("${TAG} Permission locationWhenInUse value = "+value.toString());
+    //when location Permission not granted
+    if(value){
+      //come into this when not location permission
+      TLoggerHelper.info("${TAG} Permission locationWhenInUse inside ifvalue = "+value.toString());
+       Permission.locationWhenInUse.request();
+    }
+  });
+
 
   runApp(const MyApp());
 }

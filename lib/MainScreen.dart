@@ -1,34 +1,22 @@
+import 'dart:async';
+
 import 'package:aaa/utils/global.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import '../../utils/global.dart';
+
 import 'controllers/CartController.dart';
-import 'controllers/FcmService.dart';
-import 'controllers/GetAllOrdersChart.dart';
 import 'controllers/NotificationController.dart';
 import 'logging/logger_helper.dart';
-import 'models/ChartData.dart';
 import 'screens/auth-ui/SignInScreen.dart';
-import 'screens/widget/AllCategoriesScreen.dart';
-import 'screens/widget/AllFlashProductScreen.dart';
-import 'screens/widget/AllProductsScreen.dart';
-import 'screens/widget/AllProductsWidget.dart';
-import 'screens/widget/BannersWidget.dart';
-import 'screens/widget/CartScreen.dart';
-import 'screens/widget/CategoriesWidget.dart';
-import 'screens/widget/FlashSaleWidget.dart';
-import 'screens/widget/HeadingWidget.dart';
 import 'screens/widget/MyDrawerWidget.dart';
-import 'screens/widget/NotificationScreen.dart';
 import 'services/NotificationService.dart';
-import 'services/SendNotificationService.dart';
-import 'services/getserverkey.dart';
 import 'utils/app-constant.dart';
 import 'package:get/get.dart';
-import 'package:badges/badges.dart' as badges;
-import 'package:syncfusion_flutter_charts/charts.dart';
-import 'utils/colors.dart';
 
 //github demo user app = https://github.com/Warisalikhan786/EasyShopping/blob/main/lib/controllers/google-sign-in-controller.dart
 //github demo admin app = https://github.com/Warisalikhan786/easy-shopping-admin-panel/blob/main/lib/screens/main-screen.dart
@@ -48,6 +36,11 @@ class _MainScreen extends State<MainScreen> {
   NotificationService notificationService = NotificationService();
   NotificationController notificationController = Get.put(NotificationController());
   CartController cartController = Get.put(CartController()); //use only for get cart count
+  double bottomPadding = 0;
+
+  late Position currentPositionUser;
+  final Completer<GoogleMapController> googleMapCompleterController = Completer<GoogleMapController>();
+  GoogleMapController? controllerGoogleMap;
 
   @override
   void initState()  {
@@ -63,7 +56,6 @@ class _MainScreen extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     TLoggerHelper.info("${TAG} inside build");
-    final GetAllOrdersChart getAllOrdersChart = Get.put(GetAllOrdersChart());
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppConstant.appMainColor,
@@ -85,73 +77,45 @@ class _MainScreen extends State<MainScreen> {
         ],
       ),
       drawer: MyDrawerWidget(),
-      body: Container(
-        child: Column(
-          children: [
-            Obx(() {
-              final monthlyData = getAllOrdersChart.monthlyOrderData;
-              if (monthlyData.isEmpty) {
+      body: GoogleMap(
+          padding:EdgeInsets.only(top: 26,bottom: bottomPadding),
+          mapType:MapType.normal,
+          myLocationEnabled:true,
+          initialCameraPosition: kGooglePlex1,
+          onMapCreated:(GoogleMapController mapControlller)
+          {
+            controllerGoogleMap = mapControlller;
+            googleMapCompleterController.complete(controllerGoogleMap);
 
-                TLoggerHelper.info("${TAG} if empty monthlyData = "+monthlyData.toString());
-                return Container(
-                  height: Get.height / 2,
-                  child: Center(
-                    child: CupertinoActivityIndicator(),
-                  ),
-                );
-              }
-              else {
-                //associateMethods.showSnackBarMsg("my demo", context);
-
-                TLoggerHelper.info("${TAG} if not empty monthlyData = "+monthlyData.toString()); // [Instance of 'ChartData']
-                return SizedBox(
-                  height: Get.height / 2,
-                  child: SfCartesianChart(
-                    tooltipBehavior: TooltipBehavior(enable: true),
-                    primaryXAxis: CategoryAxis(arrangeByIndex: true),
-                      //for dynamic data of users orders
-                    series: <LineSeries<ChartData, String>>[
-                      LineSeries<ChartData, String>(
-                        dataSource: monthlyData,
-                        width: 2.5,
-                        color: AppConstant.appMainColor,
-                        xValueMapper: (ChartData data, _) => data.month,
-                        yValueMapper: (ChartData data, _) => data.value,
-                        name: "Monthly Orders",
-                        markerSettings: MarkerSettings(isVisible: true),
-                      )
-                    ],
-
-                      //for demo fixed data
-                      /*series: <LineSeries<SalesData, String>>[
-                        LineSeries<SalesData, String>(
-                            dataSource:  <SalesData>[
-                              SalesData('Jan', 35),
-                              SalesData('Feb', 28),
-                              SalesData('Mar', 34),
-                              SalesData('Apr', 32),
-                              SalesData('May', 40),
-                            *//*  SalesData('May', 40),
-                              SalesData('May', 40),
-                              SalesData('May', 40),
-                              SalesData('May', 40)*//*
-                            ],
-                            xValueMapper: (SalesData sales, _) => sales.year,
-                            yValueMapper: (SalesData sales, _) => sales.sales,
-                            // Enable data label
-                            dataLabelSettings: DataLabelSettings(isVisible: true)
-                        )
-                      ]*/
-                  ),
-                );
-              }
-            })
-          ],
-        ),
-      ),
+            getCurrentLocation();
+          },
+      )
     );
   }
+
+
+
+  getCurrentLocation() async{
+    TLoggerHelper.info("${TAG} inside getCurrentLocation");
+
+    Position userPosition = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.bestForNavigation);
+    currentPositionUser = userPosition;
+    //Latitude: 22.2832548, Longitude: 70.7738729
+    TLoggerHelper.info("${TAG} getCurrentLocation currentPositionUser = "+currentPositionUser.toString());
+
+    LatLng userLatlng = LatLng(currentPositionUser.latitude, currentPositionUser.longitude);
+    //LatLng(22.2832546, 70.7738741)
+    TLoggerHelper.info("${TAG} getCurrentLocation userLatlng = "+userLatlng.toString());
+
+    CameraPosition positionCamera = CameraPosition(target: userLatlng, zoom:17,
+      //bearing: currentPositionUser.heading
+    );
+    controllerGoogleMap!.animateCamera(CameraUpdate.newCameraPosition(positionCamera));
+
+  }
+
 }
+
 
 class SalesData {
   SalesData(this.year, this.sales);
