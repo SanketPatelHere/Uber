@@ -32,7 +32,7 @@ class HeadingWidget extends StatelessWidget{
                   children: [
                     //Text("Categories", style: TextStyle(fontWeight: FontWeight.bold, color: TColors.grey.shade800)),
                     //Text(headingTitle, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Colors.grey.shade800,)),
-                    Text(headingTitle, style:  Theme.of(context).textTheme.headlineSmall),
+                    Text(headingTitle, style: Theme.of(context).textTheme.headlineSmall),
                     //Text(headingSubTitle, style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14, color: Colors.grey.shade800)),
                     Text(headingSubTitle, style: Theme.of(context).textTheme.bodyMedium),
                   ],

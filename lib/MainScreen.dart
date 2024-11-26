@@ -37,6 +37,7 @@ class _MainScreen extends State<MainScreen> {
   NotificationController notificationController = Get.put(NotificationController());
   CartController cartController = Get.put(CartController()); //use only for get cart count
   double bottomPadding = 0;
+  double searchContainerHeight = 230;
 
   late Position currentPositionUser;
   final Completer<GoogleMapController> googleMapCompleterController = Completer<GoogleMapController>();
@@ -77,19 +78,103 @@ class _MainScreen extends State<MainScreen> {
         ],
       ),
       drawer: MyDrawerWidget(),
-      body: GoogleMap(
-          padding:EdgeInsets.only(top: 26,bottom: bottomPadding),
-          mapType:MapType.normal,
-          myLocationEnabled:true,
-          initialCameraPosition: kGooglePlex1,
-          onMapCreated:(GoogleMapController mapControlller)
-          {
-            controllerGoogleMap = mapControlller;
-            googleMapCompleterController.complete(controllerGoogleMap);
+      body: Stack(
+        children: [
 
-            getCurrentLocation();
-          },
+          //Google map
+          GoogleMap(
+            padding:EdgeInsets.only(top: 26,bottom: bottomPadding),
+            mapType:MapType.normal,
+            myLocationEnabled:true,
+            initialCameraPosition: kGooglePlex1,
+            onMapCreated:(GoogleMapController mapControlller)
+            {
+              controllerGoogleMap = mapControlller;
+              googleMapCompleterController.complete(controllerGoogleMap);
+
+              getCurrentLocation();
+            },
+          ),
+
+          //bottom search location container
+          Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: AnimatedSize(
+                  curve: Curves.easeInOut,
+                  duration: const Duration(milliseconds: 122),
+                  child: Container(
+                    //height: searchContainerHeight, //220
+                    height: 200, //220
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(21),
+                        topRight: Radius.circular(21),
+                      ),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
+                      child: Column(
+                        children: [
+                          Row(
+                              children: [
+                                    const Icon(Icons.location_on_outlined, color:Colors.grey),
+                                    const SizedBox(width: 13),
+                                    Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          //const Text("From", style: TextStyle(fontSize: 12)),
+                                          //Text("From", style: Theme.of(context).textTheme.labelMedium),
+                                          Text("From", style: TextStyle(color: AppConstant.appTextColor2,fontSize: 12)),
+                                          //const Text("jade blue, rajkot", style: TextStyle(fontSize: 12)),
+                                          //Text("jade blue, rajkot", style: Theme.of(context).textTheme.labelMedium),
+                                          Text("jade blue, rajkot", style: TextStyle(color: AppConstant.appTextColor2,fontSize: 12)),
+                                        ],
+                                    ),
+                              ],
+                          ),
+                          const SizedBox(height: 10),
+                          const Divider(height: 1, thickness: 1,color: Colors.grey),
+                          const SizedBox(height: 10),
+                          Row(
+                            children: [
+                              const Icon(Icons.location_pin, color:Colors.grey),
+                              const SizedBox(width: 13),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text("To", style: TextStyle(color: AppConstant.appTextColor2,fontSize: 12)),
+                                  Text("Where to Go?", style: TextStyle(color: AppConstant.appTextColor2,fontSize: 12)),
+                                ],
+                              ),
+                            ],
+                          ),
+
+                          const SizedBox(height: 10),
+                          const Divider(height: 1, thickness: 1,color: Colors.grey),
+                          const SizedBox(height: 10),
+
+                          ElevatedButton(
+                              onPressed: (){},
+                              style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                              child: const Text(" Select Destination ",
+                                style: TextStyle(color:Colors.white),
+                              )
+                          )
+                        ],
+                      ),
+                    ),
+
+                  ),
+              )
+
+          )
+        ],
       )
+
+
     );
   }
 
