@@ -40,8 +40,12 @@ apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.google.firebase.crashlytics' //for firebase crashlytics(show crash in firebase)
 apply plugin: 'com.google.firebase.firebase-perf' //for firebase performance monitoring
 
+
+
 android {
-    namespace "com.example.ecommadmin"
+    namespace =  "com.example.ecommadmin" //Groovy = build.gradle
+    //namespace "com.example.ecommadmin" //kotlin = build.gradle.kts
+
     //testNamespace "com.example.ecommadmin"
     ///compileSdkVersion 35
     compileSdk 35
@@ -49,7 +53,8 @@ android {
     ///compileSdkVersion flutter.compileSdkVersion
     ///ndkVersion flutter.ndkVersion //26.1.10909125 //23.1.7779620 //working
     //ndkVersion '26.1.10909125'
-    ndkVersion '27.0.12077973'
+    //ndkVersion '27.0.12077973'
+    ndkVersion = '27.0.12077973'
 
 
 
@@ -99,7 +104,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.example.ecommadmin"
+        applicationId = "com.example.ecommadmin"
 
         /*manifestPlaceholders = [appAuthRedirectScheme: "com.example.ecommadmin",
                                 applicationName: "com.example.ecommadmin"]*/
@@ -172,6 +177,15 @@ dependencies {
 
     implementation 'com.android.support:multidex:2.0.1'
 
+
+    //implementation libs.androidxappcompat
+    //implementation libs.design
+
+
+    //implementation libs.androidx.core.ktx
+    implementation 'androidx.core:core-ktx:1.13.1'
+    //implementation 'com.google.android.material:material:1.12.0' //add becuase, error @android:style/Theme.Light.NoTitleBar not found flutter
+    implementation libs.material //add becuase, error @android:style/Theme.Light.NoTitleBar not found flutter
 
     // you can upgrade the window library too
     implementation 'androidx.window:window:1.0.0'

@@ -1,3 +1,6 @@
+import 'package:aaa/utils/TLoaders.dart';
+import 'package:aaa/utils/global.dart';
+import 'package:app_settings/app_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:device_info_plus/device_info_plus.dart';
@@ -56,18 +59,32 @@ void main() async{
 
   TLoggerHelper.info("${TAG} build called");
 
-  await Permission.locationWhenInUse.isDenied.then((value) async{
-    TLoggerHelper.info("${TAG} Permission locationWhenInUse value = "+value.toString());
-    //when location Permission not granted
-    if(value){
-      //come into this when not location permission
-      TLoggerHelper.info("${TAG} Permission locationWhenInUse inside ifvalue = "+value.toString());
-       Permission.locationWhenInUse.request();
+    //for ask location permission start
+    final hasPermission = await handleLocationPermission();
+    TLoggerHelper.info("${TAG} hasPermission = "+hasPermission.toString());
+    if(!hasPermission) {
+      //return;
+      //agian ask permission
+      LocationPermission permission = await Geolocator.requestPermission();
     }
-  });
+    //or
+    await Permission.locationWhenInUse.isDenied.then((value) async{
+      TLoggerHelper.info("${TAG} Permission locationWhenInUse value = "+value.toString());
+      //when location Permission not granted
+      if(value){
+        //come into this when not location permission
+        TLoggerHelper.info("${TAG} Permission locationWhenInUse inside if value = "+value.toString());
+        Permission.locationWhenInUse.request();
+      }
+      else{
+        TLoggerHelper.info("${TAG} Permission locationWhenInUse inside else value = "+value.toString());
+      }
+    });
+    //for ask location permission end
 
 
-  runApp(const MyApp());
+    runApp(const MyApp());
+
 }
 
 
@@ -84,6 +101,8 @@ class MyApp extends StatefulWidget {
   @override
   State<MyApp> createState() => _MyAppState();
 }
+
+
 
 class _MyAppState extends State<MyApp> {
   final TAG = "Myy MyApp ";
@@ -293,4 +312,14 @@ class _MyAppState extends State<MyApp> {
 
   }
 
+
+
 }
+
+
+/*
+Flutter 3.24.5 • channel stable • https://github.com/flutter/flutter.git
+Framework • revision dec2ee5c1f (13 days ago) • 2024-11-13 11:13:06 -0800
+Engine • revision a18df97ca5
+Tools • Dart 3.5.4 • DevTools 2.37.3
+ */

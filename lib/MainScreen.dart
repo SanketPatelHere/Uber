@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:aaa/utils/GoogleMapMethods.dart';
 import 'package:aaa/utils/global.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -44,7 +45,7 @@ class _MainScreen extends State<MainScreen> {
   GoogleMapController? controllerGoogleMap;
 
   @override
-  void initState()  {
+  void initState() {
     TLoggerHelper.info("${TAG} inside initState");
     super.initState();
     notificationService.requestNotificationPermission();
@@ -52,11 +53,14 @@ class _MainScreen extends State<MainScreen> {
     notificationService.firebaseInit(context); //initLocalNotification => //showNotification
     notificationService.setupInterfaceMessage(context); //handleMessage (for background and terminated app notifcation)
     ///FcmService.firebaseInit(); //now no need of this, because same use in notificationService.firebaseInit
+
+
   }
 
   @override
   Widget build(BuildContext context) {
     TLoggerHelper.info("${TAG} inside build");
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppConstant.appMainColor,
@@ -191,6 +195,21 @@ class _MainScreen extends State<MainScreen> {
     LatLng userLatlng = LatLng(currentPositionUser.latitude, currentPositionUser.longitude);
     //LatLng(22.2832546, 70.7738741)
     TLoggerHelper.info("${TAG} getCurrentLocation userLatlng = "+userLatlng.toString());
+
+
+    //for get address from lat,long start
+    //direct get address without api calling, using geocoding , no need of key start
+    //List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
+    //giving list of 5 places
+    //TLoggerHelper.info("${TAG} getAddressFromLatLngFree placemarks = "+placemarks.toString());
+    GoogleMapMethods.getAddressFromLatLngExactFree(currentPositionUser);
+    //direct get address without api calling, using geocoding , no need of key end
+    //or
+    GoogleMapMethods.getAddressFromLatLngNearest(currentPositionUser.latitude, currentPositionUser.longitude);
+    //or
+    GoogleMapMethods.convertGeoGraphicCoOrdinatesIntoHumanReadableAddress(currentPositionUser, context);
+    //for get address from lat,long end
+
 
     CameraPosition positionCamera = CameraPosition(target: userLatlng, zoom:17,
       //bearing: currentPositionUser.heading
