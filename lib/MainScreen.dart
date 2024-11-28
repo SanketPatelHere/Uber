@@ -1,10 +1,13 @@
 import 'dart:async';
 
+import 'package:aaa/appinfo/AppInfo.dart';
 import 'package:aaa/utils/GoogleMapMethods.dart';
 import 'package:aaa/utils/global.dart';
+import 'package:aaa/utils/image_strings.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -34,6 +37,7 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreen extends State<MainScreen> {
   final TAG = "Myy MainScreen ";
+
   NotificationService notificationService = NotificationService();
   NotificationController notificationController = Get.put(NotificationController());
   CartController cartController = Get.put(CartController()); //use only for get cart count
@@ -43,6 +47,7 @@ class _MainScreen extends State<MainScreen> {
   late Position currentPositionUser;
   final Completer<GoogleMapController> googleMapCompleterController = Completer<GoogleMapController>();
   GoogleMapController? controllerGoogleMap;
+  GlobalKey<ScaffoldState> sKey = GlobalKey<ScaffoldState>();
 
   @override
   void initState() {
@@ -62,6 +67,7 @@ class _MainScreen extends State<MainScreen> {
     TLoggerHelper.info("${TAG} inside build");
 
     return Scaffold(
+      key: sKey,
       appBar: AppBar(
         backgroundColor: AppConstant.appMainColor,
         title: const Text("Admin Panel"),
@@ -81,7 +87,68 @@ class _MainScreen extends State<MainScreen> {
           ),
         ],
       ),
-      drawer: MyDrawerWidget(),
+      ///drawer: MyDrawerWidget(), //drawer 1
+      //drawer 2
+      drawer: SizedBox(
+        width: 256,
+        child: Drawer(
+          backgroundColor:AppConstant.appSecondaryColor,
+          child: ListView(
+            children: [
+
+              //header
+              SizedBox(
+                height: 160,
+                child: DrawerHeader(
+                    decoration: const BoxDecoration(color: Colors.white),
+                    child: Row(
+                      children: [
+                        Image.asset(TImages.user, width: 60, height: 60),
+                        const SizedBox(width: 16),
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text("Username ", style: TextStyle(color: AppConstant.appTextColor2, fontSize: 12, fontWeight: FontWeight.bold)),
+                            SizedBox(width: 16),
+                            Text("Profile ", style: TextStyle(color: AppConstant.appTextColor2, fontSize: 12, fontWeight: FontWeight.bold)),
+
+                          ],
+                        )
+                      ],
+                    )
+                ),
+              ),
+
+              //body
+              GestureDetector(
+                onTap: ()async{
+                  await FirebaseAuth.instance.signOut();
+                  Navigator.push(context, MaterialPageRoute(builder: (c)=>SignInScreen()));
+                },
+                child: const ListTile(
+                  leading: Icon(Icons.history, color: Colors.white),
+                  title: Text("History", style: TextStyle(color: AppConstant.appTextColor, fontSize: 12)),
+                ),
+              ),
+              GestureDetector(
+                onTap: (){},
+                child: const ListTile(
+                  leading: Icon(Icons.info, color: Colors.white),
+                  title: Text("About", style: TextStyle(color: AppConstant.appTextColor, fontSize: 12)),
+                ),
+              ),
+              GestureDetector(
+                onTap: (){},
+                child: const ListTile(
+                  leading: Icon(Icons.logout, color: Colors.white),
+                  title: Text("Logout", style: TextStyle(color: AppConstant.appTextColor, fontSize: 12)),
+                ),
+              ),
+
+            ],
+          ),
+        ),
+      ),
       body: Stack(
         children: [
 
@@ -99,6 +166,38 @@ class _MainScreen extends State<MainScreen> {
               getCurrentLocation();
             },
           ),
+
+          //for drawer button show start
+          Positioned(
+              top:37,
+              left: 20,
+              child: GestureDetector(
+                onTap: (){
+                    sKey.currentState!.openDrawer();
+               },
+                child: Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Colors.grey,
+                          blurRadius: 5,
+                          spreadRadius: 0.5,
+                          offset: Offset(0.7,0.7)
+                        )
+                      ],
+                      //color: Colors.white),
+                ),
+                child: CircleAvatar(
+                      backgroundColor: Colors.white,
+                      radius: 20,
+                      child: Icon(Icons.menu, color: Colors.black,),
+                 ),
+              )
+          ),
+          ),
+          //for drawer button show end
+
 
           //bottom search location container
           Positioned(
@@ -134,7 +233,12 @@ class _MainScreen extends State<MainScreen> {
                                           Text("From", style: TextStyle(color: AppConstant.appTextColor2,fontSize: 12)),
                                           //const Text("jade blue, rajkot", style: TextStyle(fontSize: 12)),
                                           //Text("jade blue, rajkot", style: Theme.of(context).textTheme.labelMedium),
-                                          Text("jade blue, rajkot", style: TextStyle(color: AppConstant.appTextColor2,fontSize: 12)),
+                                          //Text("jade blue, rajkot", style: TextStyle(color: AppConstant.appTextColor2,fontSize: 12)),
+                                          Text(Provider.of<AppInfo>(context, listen: true).pickUpLocation==null
+                                              ?"Please wait..."
+                                              //:(Provider.of<AppInfo>(context, listen: false).pickUpLocation!.placeName!),
+                                              :(Provider.of<AppInfo>(context, listen: false).pickUpLocation!.placeName!).substring(0,40)+"...",
+                                              style: TextStyle(color: AppConstant.appTextColor2,fontSize: 12)),
                                         ],
                                     ),
                               ],
@@ -172,10 +276,11 @@ class _MainScreen extends State<MainScreen> {
                     ),
 
                   ),
-              )
+              ),
 
-          )
+          ),
         ],
+
       )
 
 
@@ -187,6 +292,17 @@ class _MainScreen extends State<MainScreen> {
   getCurrentLocation() async{
     TLoggerHelper.info("${TAG} inside getCurrentLocation");
 
+
+    //for ask location permission start
+    /*final hasPermission = await handleLocationPermission();
+    TLoggerHelper.info("${TAG} hasPermission = "+hasPermission.toString());
+    if(!hasPermission) {
+      //return;
+      //agian ask permission
+      LocationPermission permission = await Geolocator.requestPermission();
+    }*/
+    //for ask location permission end
+
     Position userPosition = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.bestForNavigation);
     currentPositionUser = userPosition;
     //Latitude: 22.2832548, Longitude: 70.7738729
@@ -196,13 +312,19 @@ class _MainScreen extends State<MainScreen> {
     //LatLng(22.2832546, 70.7738741)
     TLoggerHelper.info("${TAG} getCurrentLocation userLatlng = "+userLatlng.toString());
 
+    CameraPosition positionCamera = CameraPosition(target: userLatlng, zoom:17,
+      //bearing: currentPositionUser.heading
+    );
+
+    controllerGoogleMap!.animateCamera(CameraUpdate.newCameraPosition(positionCamera));
+
 
     //for get address from lat,long start
     //direct get address without api calling, using geocoding , no need of key start
     //List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
     //giving list of 5 places
     //TLoggerHelper.info("${TAG} getAddressFromLatLngFree placemarks = "+placemarks.toString());
-    GoogleMapMethods.getAddressFromLatLngExactFree(currentPositionUser);
+    GoogleMapMethods.getAddressFromLatLngExactFree(context, currentPositionUser);
     //direct get address without api calling, using geocoding , no need of key end
     //or
     GoogleMapMethods.getAddressFromLatLngNearest(currentPositionUser.latitude, currentPositionUser.longitude);
@@ -211,12 +333,10 @@ class _MainScreen extends State<MainScreen> {
     //for get address from lat,long end
 
 
-    CameraPosition positionCamera = CameraPosition(target: userLatlng, zoom:17,
-      //bearing: currentPositionUser.heading
-    );
-    controllerGoogleMap!.animateCamera(CameraUpdate.newCameraPosition(positionCamera));
+
 
   }
+
 
 }
 

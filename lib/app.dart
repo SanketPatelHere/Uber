@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'appinfo/AppInfo.dart';
 import 'firebase_options.dart';
 import 'logging/logger_helper.dart';
 import 'screens/auth-ui/SplashScreen.dart';
@@ -18,7 +19,7 @@ import 'package:firebase_database/firebase_database.dart';
 //import 'package:platform_device_id/platform_device_id.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:geolocator/geolocator.dart';
-
+import 'package:provider/provider.dart';
 
 /*
 return Scaffold
@@ -162,19 +163,22 @@ class _MyAppState extends State<MyApp> {
     //todo for save in realtime database end
 
     //return MaterialApp(
-    return GetMaterialApp(
-      title: 'Ecomm',
-      debugShowCheckedModeBanner: false,
-      themeMode: ThemeMode.system,
-      theme: TAppTheme.lightTheme,
-      darkTheme: TAppTheme.darkTheme,
-      home: SplashScreen(),
-      ///home: SignInScreen(),
-      //home: SignUpScreen(),
-      ///home: WelcomeScreen(),
-      builder: EasyLoading.init(),
-      ///home:_isSignedIn?const HomeScreen(): LoginScreen(),
-      navigatorKey: Get.key,
+    return ChangeNotifierProvider(
+      create:(context)=>AppInfo(), //for change ui when address change
+      child: GetMaterialApp(
+        title: 'Ecomm',
+        debugShowCheckedModeBanner: false,
+        themeMode: ThemeMode.system,
+        theme: TAppTheme.lightTheme,
+        darkTheme: TAppTheme.darkTheme,
+        home: SplashScreen(),
+        ///home: SignInScreen(),
+        //home: SignUpScreen(),
+        ///home: WelcomeScreen(),
+        builder: EasyLoading.init(),
+        ///home:_isSignedIn?const HomeScreen(): LoginScreen(),
+        navigatorKey: Get.key,
+      ),
     );
 
   }

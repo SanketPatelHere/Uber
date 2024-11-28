@@ -2,10 +2,11 @@
 
 import 'dart:convert';
 
+import 'package:aaa/appinfo/AppInfo.dart';
 import 'package:aaa/models/AddressModel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
+import 'package:provider/provider.dart';
 
 import 'package:geocoding/geocoding.dart';
 //import 'package:location/location.dart';
@@ -41,18 +42,6 @@ geocoding findAddressesFromCoordinates - not working
 
  */
 
-/*
-Provider = a package and design pattern that helps manage an app's state
-a widely used state management solution in Flutter applications.
-It simplifies the process of managing and sharing state across different parts of the widget tree.
-
-Provider = 	The most basic form of provider. It takes a value and exposes it, whatever the value is.
-ListenableProvider 	A specific provider for Listenable object. ListenableProvider will listen to the object and ask widgets which depend on it to rebuild whenever the listener is called.
-ChangeNotifierProvider 	A specification of ListenableProvider for ChangeNotifier. It will automatically call ChangeNotifier.dispose when needed.
-ValueListenableProvider 	Listen to a ValueListenable and only expose ValueListenable.value.
-StreamProvider 	Listen to a Stream and expose the latest value emitted.
-FutureProvider 	Takes a Future and updates dependents when the future completes.
- */
 class GoogleMapMethods
 {
     static final TAG = "Myy GoogleMapMethods ";
@@ -87,10 +76,13 @@ class GoogleMapMethods
         AddressModel addressModel = AddressModel();
         addressModel.humanReadableAddress = humanReadableAddress;
         addressModel.placeName = humanReadableAddress;
-        addressModel.placeID = responseFromAPI["results"][0]["place_id"];;
+        addressModel.placeID = responseFromAPI["results"][0]["place_id"];
         addressModel.latitudePosition = position.latitude.toString();
         addressModel.longitudePosition = position.longitude.toString();
         TLoggerHelper.info("${TAG} convertGeoGraphicCoOrdinatesIntoHumanReadableAddress placeID = "+addressModel.placeID.toString());
+
+
+        ///Provider.of<AppInfo>(context, listen: false).updatePickUpLocation(addressModel); //not get due to not key
 
       }
       TLoggerHelper.info("${TAG} convertGeoGraphicCoOrdinatesIntoHumanReadableAddress humanReadableAddress = "+humanReadableAddress);
@@ -234,7 +226,7 @@ class GoogleMapMethods
     }
 
 
-    static Future<void> getAddressFromLatLngExactFree(Position position) async {
+    static Future<void> getAddressFromLatLngExactFree(BuildContext context, Position position) async {
       await placemarkFromCoordinates(position.latitude, position.longitude)
           .then((List<Placemark> placemarks) {
         Placemark place = placemarks[0];
@@ -252,6 +244,18 @@ class GoogleMapMethods
           var currentAddress = '${place.street}, ${place.subLocality}, ${place.locality},${place.subAdministrativeArea},${place.country}, ${place.postalCode}';
           //Pragati 115, Jagannath Plot,, 360005
           TLoggerHelper.info("${TAG} getAddressFromLatLngExactFree currentAddress = "+currentAddress.toString());
+
+
+        AddressModel addressModel = AddressModel();
+        addressModel.humanReadableAddress = currentAddress;
+        addressModel.placeName = currentAddress;
+        //addressModel.placeID = responseFromAPI["results"][0]["place_id"];
+        addressModel.placeID = currentAddress;
+        addressModel.latitudePosition = position.latitude.toString();
+        addressModel.longitudePosition = position.longitude.toString();
+        TLoggerHelper.info("${TAG} convertGeoGraphicCoOrdinatesIntoHumanReadableAddress placeID = "+addressModel.placeID.toString());
+
+        Provider.of<AppInfo>(context, listen: false).updatePickUpLocation(addressModel);
 
           /*
            [

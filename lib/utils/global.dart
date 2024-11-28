@@ -7,6 +7,8 @@ import '../logging/logger_helper.dart';
 import 'GoogleMapMethods.dart';
 import 'package:geolocator/geolocator.dart';
 
+import 'TLoaders.dart';
+
 /*
 global class that import all class + make object only one time,
 so in our page we just import this global class only
@@ -47,6 +49,7 @@ Future<bool> handleLocationPermission() async {
   if(permission == LocationPermission.denied) {
     permission = await Geolocator.requestPermission();
     if(permission == LocationPermission.denied) {
+
       TLoggerHelper.info("${TAG} user handleLocationPermission Location permissions are denied");
       //TLoaders.customToast(message: "Location permissions are denied");
       //ScaffoldMessenger.of(Get.context!).showSnackBar(const SnackBar(content: Text('Location permissions are denied')));
