@@ -187,6 +187,11 @@ dev_dependencies:
   #flutter_geocoder: ^0.2.2-nullsafety #added myself, free //working, but again open project then error
   #flutter_geocoder:
 
+  #for google places api for textbox search
+  #google_places_flutter: ^2.0.9 #google_places_flutter >=2.0.5 depends on rxdart ^0.27.2 and google_places_flutter <2.0.5
+  #google_maps_webservice: #^0.0.19+1 #google_maps_webservice >=0.0.20-nullsafety.0 <0.0.20-nullsafety.1 depends on http ^0.13
+
+
   #icons
   iconsax: ^0.0.8
   # The following adds the Cupertino Icons font to your application.

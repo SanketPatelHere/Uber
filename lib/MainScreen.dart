@@ -1,10 +1,12 @@
 import 'dart:async';
 
 import 'package:aaa/appinfo/AppInfo.dart';
+import 'package:aaa/screens/widget/SelectedDestinationPage.dart';
 import 'package:aaa/utils/GoogleMapMethods.dart';
 import 'package:aaa/utils/global.dart';
 import 'package:aaa/utils/image_strings.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -209,7 +211,7 @@ class _MainScreen extends State<MainScreen> {
                   duration: const Duration(milliseconds: 122),
                   child: Container(
                     //height: searchContainerHeight, //220
-                    height: 200, //220
+                    height: 230, //220
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.only(
@@ -230,14 +232,16 @@ class _MainScreen extends State<MainScreen> {
                                         children: [
                                           //const Text("From", style: TextStyle(fontSize: 12)),
                                           //Text("From", style: Theme.of(context).textTheme.labelMedium),
-                                          Text("From", style: TextStyle(color: AppConstant.appTextColor2,fontSize: 12)),
+                                          Text("From",
+                                              style: TextStyle(color: AppConstant.appTextColor2,fontSize: 12)),
                                           //const Text("jade blue, rajkot", style: TextStyle(fontSize: 12)),
                                           //Text("jade blue, rajkot", style: Theme.of(context).textTheme.labelMedium),
                                           //Text("jade blue, rajkot", style: TextStyle(color: AppConstant.appTextColor2,fontSize: 12)),
                                           Text(Provider.of<AppInfo>(context, listen: true).pickUpLocation==null
                                               ?"Please wait..."
                                               //:(Provider.of<AppInfo>(context, listen: false).pickUpLocation!.placeName!),
-                                              :(Provider.of<AppInfo>(context, listen: false).pickUpLocation!.placeName!).substring(0,40)+"...",
+                                              :(Provider.of<AppInfo>(context, listen: false).pickUpLocation!.placeName!).substring(0,35)+"...",
+                                              overflow: TextOverflow.ellipsis,
                                               style: TextStyle(color: AppConstant.appTextColor2,fontSize: 12)),
                                         ],
                                     ),
@@ -250,12 +254,17 @@ class _MainScreen extends State<MainScreen> {
                             children: [
                               const Icon(Icons.location_pin, color:Colors.grey),
                               const SizedBox(width: 13),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text("To", style: TextStyle(color: AppConstant.appTextColor2,fontSize: 12)),
-                                  Text("Where to Go?", style: TextStyle(color: AppConstant.appTextColor2,fontSize: 12)),
-                                ],
+                              GestureDetector(
+                                onTap: (){
+                                  Navigator.push(context, MaterialPageRoute(builder: (c)=>SelectedDestinationPage()));
+                                },
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text("To", style: TextStyle(color: AppConstant.appTextColor2,fontSize: 12)),
+                                    Text("Where to Go?", style: TextStyle(color: AppConstant.appTextColor2,fontSize: 12)),
+                                  ],
+                                ),
                               ),
                             ],
                           ),
@@ -265,7 +274,9 @@ class _MainScreen extends State<MainScreen> {
                           const SizedBox(height: 10),
 
                           ElevatedButton(
-                              onPressed: (){},
+                              onPressed: (){
+                                Navigator.push(context, MaterialPageRoute(builder: (c)=>SelectedDestinationPage()));
+                              },
                               style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
                               child: const Text(" Select Destination ",
                                 style: TextStyle(color:Colors.white),
@@ -333,8 +344,38 @@ class _MainScreen extends State<MainScreen> {
     //for get address from lat,long end
 
 
+    ///await getUserInfoAndCheckBlockStatus();
+
+  }
 
 
+  getUserInfoAndCheckBlockStatus() async{
+      TLoggerHelper.info("${TAG} inside getUserInfoAndCheckBlockStatusd");
+      DatabaseReference reference = FirebaseDatabase.instance.ref().child("users")
+            .child(FirebaseAuth.instance.currentUser!.uid);
+      await reference.once().then((dataSnap){
+        TLoggerHelper.info("${TAG} inside getUserInfoAndCheckBlockStatusd dataSnap = "+dataSnap.toString());
+
+            if(dataSnap.snapshot.value!=null){
+              //user access granted
+              if((dataSnap.snapshot.value as Map)["blockStatus"]=="no"){
+                setState(() {
+                    myUserName = (dataSnap.snapshot.value as Map)["name"];
+                    myUserPhone = (dataSnap.snapshot.value as Map)["phone"];
+                });
+              }
+              //user access stop
+              //blockStatus=yes, user blocked by admin
+              else{
+                  associateMethods.showSnackBarMsg("You are blocked. Contact admin: sanketramani0@gmail.com", context);
+              }
+            }
+            //blockStatus=null
+            else{
+              FirebaseAuth.instance.signOut();
+              Navigator.push(context, MaterialPageRoute(builder: (c)=>SignInScreen()));
+            }
+      });
   }
 
 
